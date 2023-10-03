@@ -95,6 +95,7 @@ public class CTokenizerCommentTest {
         String testString = "/***       // 閉じていないコメントはEOFが出るはず";
         inputStream.setInputString(testString);
         CToken token1 = tokenizer.getNextToken(cpContext);
+        System.out.println(token1.getText());
         helper.checkToken("token 1", token1, CToken.TK_EOF, "end_of_file", 1, 1);
     }
 
