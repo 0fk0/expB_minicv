@@ -97,7 +97,6 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						text.append(ch);
 						state = 5;
 					} else if (ch == '/'){
-						startCol = colNo - 1;
 						state = 6;
 					} else { // ヘンな文字を読んだ
 						startCol = colNo - 1;
@@ -135,13 +134,10 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 				case 6: // /を読んだ
 					ch = readChar();
 					if (ch == '/') {
-						startCol = colNo - 1;
 						state = 8;
 					} else if (ch == '*'){
-						startCol = colNo - 1;
 						state = 9;
 					} else {
-						startCol = colNo - 1;
 						text.append(ch);
 						state = 2;
 					}
@@ -149,42 +145,29 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 				case 7: // *を読んだ(コメント化状態)
 					ch = readChar();
 					if (ch == '/'){
-						startCol = colNo - 1;
 						state = 0;
 					} else if (ch == '*'){
-						startCol = colNo - 1;
 					} else if (ch == (char) -1) {
 						startCol = colNo - 1;
 						state = 1;
 					} else {
-						startCol = colNo - 1;
 						state = 9;
 					}
 					break;
 				case 8: // コメント化状態(//)
 					ch = readChar();
 					if (ch == '\n') {
-						startCol = colNo - 1;
 						state = 0;
 					} else if (ch == (char) -1) {
-						startCol = colNo - 1;
 						state = 1;
-					} else {
-						startCol = colNo - 1;
 					}
 					break;
 				case 9: // コメント化状態(/**/)
-					System.out.println(colNo);
 					ch = readChar();
-					System.out.println(ch);
 					if (ch == '*'){
-						startCol = colNo - 1;
 						state = 7;
 					} else if (ch == (char) -1) {
-						startCol = colNo - 1;
 						state = 1;
-					} else {
-						startCol = colNo - 1;
 					}
 					break;
 			}
