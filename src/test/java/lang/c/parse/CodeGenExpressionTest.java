@@ -77,7 +77,7 @@ public class CodeGenExpressionTest {
             "	MOV	-(R6), R0",
             "	MOV	-(R6), R1",
             "	ADD	R1, R0",
-            "	MOV	R0, (R6)+",
+            "	MOV	R0, (R6)+"
         };
 
         // Check only code portion, not validate comments
