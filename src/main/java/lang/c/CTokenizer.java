@@ -72,6 +72,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 		CToken tk = null;
 		char ch;
 		int startCol = colNo;
+		int lineNo_EOF = lineNo;
 		StringBuffer text = new StringBuffer();
 
 		int state = 0;
@@ -168,6 +169,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						state = 7;
 					} else if (ch == (char) -1) {
 						state = 1;
+						lineNo = lineNo_EOF;
 					}
 					break;
 			}
