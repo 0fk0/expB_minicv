@@ -14,8 +14,7 @@ import lang.c.CTokenRule;
 import lang.c.CTokenizer;
 import lang.c.TestHelper;
 
-public class CodeGenExpressionTest {
-    // Test for Expression Node of "cv00".
+public class CodeGenExpressionTest_cv01 {
 
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
@@ -44,18 +43,19 @@ public class CodeGenExpressionTest {
         context = null;
         cpContext = null;
     }
+    
+    // Test for Expression Node of "cv01".
 
-    // Test for "cv00"
     @Test
-    public void codeGenExpressionAdd2Term() throws FatalErrorException {
-        inputStream.setInputString("7 + 2");
+    public void codeGenExpressionSub2Term() throws FatalErrorException {
+        inputStream.setInputString("7-2");
         String expected[] = {
             "	MOV	#7, (R6)+",
             "	MOV	#2, (R6)+",
             "	MOV	-(R6), R0",
             "	MOV	-(R6), R1",
-            "	ADD	R1, R0",
-            "	MOV	R0, (R6)+"
+            "	SUB	R0, R1",
+            "	MOV	R1, (R6)+"
         };
 
         // Check only code portion, not validate comments
@@ -64,16 +64,16 @@ public class CodeGenExpressionTest {
     }
 
     @Test
-    public void codeGenExpressionAdd3Term() throws FatalErrorException {
-        inputStream.setInputString("13 + 7 + 2");
+    public void codeGenExpressionSub3Term() throws FatalErrorException {
+        inputStream.setInputString("13-7+3");
         String expected[] = {
             "	MOV	#13, (R6)+",
             "	MOV	#7, (R6)+",
             "	MOV	-(R6), R0",
             "	MOV	-(R6), R1",
-            "	ADD	R1, R0",
-            "	MOV	R0, (R6)+",
-            "	MOV	#2, (R6)+",
+            "	SUB	R0, R1",
+            "	MOV	R1, (R6)+",
+            "	MOV	#3, (R6)+",
             "	MOV	-(R6), R0",
             "	MOV	-(R6), R1",
             "	ADD	R1, R0",
@@ -84,4 +84,7 @@ public class CodeGenExpressionTest {
         CParseRule rule = new Expression(cpContext);
         helper.checkCodeGen(expected, rule, cpContext);
     }
+
+    // Please copy and paste the above code and add the specified test case to the following
+    // 上記のコードをコピー＆ペーストし、指定されたテストケースを以下に追加してください。
 }
