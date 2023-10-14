@@ -20,8 +20,13 @@ public class Factor extends CParseRule {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
-		if (Number.isFirst(tk)) number = new Number(pcx);
-		if (FactorAmp.isFirst(tk)) number = new FactorAmp(pcx);
+		if (Number.isFirst(tk)){
+			number = new Number(pcx);
+		} else if (FactorAmp.isFirst(tk)){
+			number = new FactorAmp(pcx);
+		} else {
+			pcx.fatalError(tk.toExplainString() + "factorに続く構文はfactorAmpかnumberです");
+		}
 		number.parse(pcx);
 	}
 

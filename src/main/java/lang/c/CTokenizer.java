@@ -87,7 +87,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else if (ch == (char) -1) { // EOF
 						startCol = colNo - 1;
 						state = 1;
-					} else if (ch == '0') { 	  // 16進数 or 8進数
+					} else if (ch == '0') { 	  // 16進数 or 8進数 or 10進数0単体
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 10;
@@ -122,15 +122,22 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
 					accept = true;
 					break;
-				case 3: // 数（10進数）の開始
+				case 3: // 10進数状態
 					ch = readChar();
 					if (Character.isDigit(ch)) {
 						text.append(ch);
 					} else {
 						// 数の終わり
-						backChar(ch); // 数を表さない文字は戻す（読まなかったことにする）
-						tk = new CToken(CToken.TK_NUM, lineNo, startCol, text.toString());
-						accept = true;
+						backChar(ch); // 数を表さない文字は戻す（読まなかったことにする
+
+						String num_10_str = text.toString();
+						int num_10_int = Integer.parseInt(num_10_str);
+						if (-(1 << 15) <= num_10_int && num_10_int <= (1 << 15) - 1) {
+							tk = new CToken(CToken.TK_NUM, lineNo, startCol, num_10_str);
+							accept = true;
+						} else {
+							state = 2; // オーバーフロー
+						}
 					}
 					break;
 				case 4: // +を読んだ
@@ -181,7 +188,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						lineNo = lineNo_EOF;
 					}
 					break;
-				case 10: // 16進数状態　or 8進数状態
+				case 10: // 16進数状態　or 8進数状態　or 10進数0単体
 					ch = readChar();
 					if (ch == 'x'){
 						text.append(ch);
@@ -192,23 +199,26 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						num_count = 0;
 						state = 12;
 					} else {
-						// 数の終わり
-						tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
+						backChar(ch);
+						tk = new CToken(CToken.TK_NUM, lineNo, startCol, text.toString());
 						accept = true;
 					}
 					break;
 				case 11: // 16進数状態
 					ch = readChar();
 					num_count++;
-					if ('0' <= ch && ch <= '9' || 'A' <= ch && ch <= 'F') {
+					if ('0' <= ch && ch <= '9' || 'A' <= ch && ch <= 'F' || 'a' <= ch && ch <= 'f') {
 						text.append(ch);
-						// オーバーフロー
-						if (num_count > 4){
-							state = 2;
-						}
 					} else {
 						// 数の終わり
-						backChar(ch); // 数を表さない文字は戻す（読まなかったことにする）
+						backChar(ch); 	// 数を表さない文字は戻す（読まなかったことにする）
+						num_count--;
+						// 0xのみの場合 | オーバーフロー
+						if (num_count == 0 || num_count > 4){
+							state = 2;
+							continue;
+						}
+
 						tk = new CToken(CToken.TK_NUM, lineNo, startCol, text.toString());
 						accept = true;
 					}
@@ -220,13 +230,16 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 
 					if ('0' <= ch && ch <= '7') {
 						text.append(ch);
-						// オーバーフロー
-						if (num_count >= 6 && !(num_count == 6 && first_ch_8 == '1')){
-							state = 2;
-						}
 					} else {
 						// 数の終わり
 						backChar(ch); // 数を表さない文字は戻す（読まなかったことにする）
+						num_count--;
+						// オーバーフロー
+						if (num_count >= 6 && !(num_count == 6 && first_ch_8 == '1')){
+							state = 2;
+							continue;
+						}
+
 						tk = new CToken(CToken.TK_NUM, lineNo, startCol, text.toString());
 						accept = true;
 					}
