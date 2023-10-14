@@ -76,6 +76,8 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 		StringBuffer text = new StringBuffer();
 
 		int state = 0;
+		int num_count = 0;
+		char first_ch_8 = ' ';
 		boolean accept = false;
 		while (!accept) {
 			switch (state) {
@@ -85,23 +87,23 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else if (ch == (char) -1) { // EOF
 						startCol = colNo - 1;
 						state = 1;
-					} else if (ch == '0') {
+					} else if (ch == '0') { 	  // 16進数 or 8進数
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 10;
-					} else if ('1' <= ch && ch <= '9') {
+					} else if ('1' <= ch && ch <= '9') { // 数（10進数）の開始
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 3;
-					} else if (ch == '+') {
+					} else if (ch == '+') { // 和
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 4;
-					} else if (ch == '-') {
+					} else if (ch == '-') { // 差
 						startCol = colNo - 1;
 						text.append(ch);
 						state = 5;
-					} else if (ch == '/'){
+					} else if (ch == '/'){ // コメント化状態
 						state = 6;
 					} else { // ヘンな文字を読んだ
 						startCol = colNo - 1;
@@ -176,13 +178,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						lineNo = lineNo_EOF;
 					}
 					break;
-				case 10: // 8進数状態　or 16進数状態
+				case 10: // 16進数状態　or 8進数状態
 					ch = readChar();
 					if (ch == 'x'){
 						text.append(ch);
+						num_count = 0;
 						state = 11;
 					} else if ('0' <= ch && ch <= '7') {
-						text.append(ch);
+						backChar(ch);
+						num_count = 0;
 						state = 12;
 					} else {
 						// 数の終わり
@@ -192,8 +196,13 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					break;
 				case 11: // 16進数状態
 					ch = readChar();
+					num_count++;
 					if ('0' <= ch && ch <= '9' || 'A' <= ch && ch <= 'F') {
 						text.append(ch);
+						// オーバーフロー
+						if (num_count > 4){
+							state = 2;
+						}
 					} else {
 						// 数の終わり
 						backChar(ch); // 数を表さない文字は戻す（読まなかったことにする）
@@ -203,9 +212,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					break;
 				case 12: // 8進数状態
 					ch = readChar();
+					num_count++;
+					if (num_count == 1) first_ch_8 = ch;
+
 					if ('0' <= ch && ch <= '7') {
 						text.append(ch);
-						state = 12;
+						// オーバーフロー
+						if (num_count >= 6 && !(num_count == 6 && first_ch_8 == '1')){
+							state = 2;
+						}
 					} else {
 						// 数の終わり
 						backChar(ch); // 数を表さない文字は戻す（読まなかったことにする）
