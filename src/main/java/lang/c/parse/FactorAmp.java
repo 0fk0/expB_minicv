@@ -7,7 +7,8 @@ import lang.c.*;
 
 public class FactorAmp extends CParseRule {
 	// factorAmp ::= AMP number
-	CToken num, amp;
+	CParseRule number;
+	CToken amp;
 
 	public FactorAmp(CParseContext pcx) {
 	}
@@ -21,21 +22,26 @@ public class FactorAmp extends CParseRule {
 		// amp(&)の次の字句を読む
 		amp = ct.getCurrentToken(pcx);
 		// numberを読み込む
-		num = ct.getNextToken(pcx);
-		ct.getNextToken(pcx);
+		CToken tk = ct.getNextToken(pcx);
+		if (Number.isFirst(tk)) {
+			number = new Term(pcx);
+			number.parse(pcx);
+		} else {
+			pcx.fatalError(tk.toExplainString() + "&の後ろはnumberです");
+		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		this.setCType(CType.getCType(CType.T_int));
+		this.setCType(CType.getCType(CType.T_pint));
 		this.setConstant(true);
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
-		o.println(";;; number starts");
-		if (num != null) {
-			o.println("\tMOV\t#" + num.getText() + ", (R6)+\t; FactorAmp: 数を積む<" + num.toExplainString() + ">");
+		o.println(";;; factorAmp starts");
+		if (number != null) {
+			number.codeGen(pcx);
 		}
-		o.println(";;; number completes");
+		o.println(";;; factorAmp completes");
 	}
 }

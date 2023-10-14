@@ -105,6 +105,9 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						state = 5;
 					} else if (ch == '/'){ // コメント化状態
 						state = 6;
+					} else if (ch == '&'){ // コメント化状態
+						startCol = colNo - 1;
+						state = 13;
 					} else { // ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
@@ -227,6 +230,10 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						tk = new CToken(CToken.TK_NUM, lineNo, startCol, text.toString());
 						accept = true;
 					}
+					break;
+				case 13: // &を読んだ
+					tk = new CToken(CToken.TK_AMP, lineNo, startCol, "&");
+					accept = true;
 					break;
 			}
 		}
