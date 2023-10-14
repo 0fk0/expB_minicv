@@ -128,7 +128,7 @@ public class SemanticCheckProgramTest_cv02 {
 
     @Test
     public void FactorWithPlusSignNotOverflow() throws FatalErrorException {
-        String[] testDataArr = {"32767"};
+        String[] testDataArr = {"32767", "-32768"}; // 第二回の段階では負の数はテスト不可
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);

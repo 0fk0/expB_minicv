@@ -103,7 +103,7 @@ public class SemanticCheckAddressTest {
     // 意味解析 正当
     @Test
     public void semanticCheckAddressSubAccept() throws FatalErrorException {
-        String[] testDataArr = { "2 - 1", "&2 - &1" };
+        String[] testDataArr = { "2 - 1", "&2 - &1", "&3-1-&1"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -123,7 +123,7 @@ public class SemanticCheckAddressTest {
     // 意味解析 不当
     @Test
     public void semanticCheckAddressSubError()  {
-        String[] testDataArr = { "テストケースを追加してください" };
+        String[] testDataArr = { "2-&1", "&3-&1-&1" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -136,10 +136,9 @@ public class SemanticCheckAddressTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down a part of error sentence you have decided on here"));
+                assertThat(e.getMessage(), containsString("左辺の型[int]と右辺の型[int*]は引けません"));
             }
         } 
     }
-    
 
 }
