@@ -5,8 +5,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.fail;
 
-import java.beans.Expression;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
