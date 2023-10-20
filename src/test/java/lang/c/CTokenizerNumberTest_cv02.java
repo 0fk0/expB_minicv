@@ -164,7 +164,7 @@ public class CTokenizerNumberTest_cv02 {
     }
 
     // 10進数
-    // ここに追加するテストケース："32767", "32768", "123a4"
+    // ここに追加するテストケース："32767", "32768", "32769", "123a4"
     @Test
     public void decimalNumber() {
         String testString = "32767";
@@ -174,13 +174,22 @@ public class CTokenizerNumberTest_cv02 {
         CToken token2 = tokenizer.getNextToken(cpContext);
         helper.checkToken("token 2", token2, CToken.TK_EOF, "end_of_file", 1, 6);
     }
-
     @Test
-    public void decimalNumberOverflow() {
+    public void decimalNumber2() {
         String testString = "32768";
         inputStream.setInputString(testString);
         CToken token1 = tokenizer.getNextToken(cpContext);
-        helper.checkToken("token 1", token1, CToken.TK_ILL, "32768", 1, 1);
+        helper.checkToken("token 1", token1, CToken.TK_NUM, "32768", 1, 1);
+        CToken token2 = tokenizer.getNextToken(cpContext);
+        helper.checkToken("token 2", token2, CToken.TK_EOF, "end_of_file", 1, 6);
+    }
+
+    @Test
+    public void decimalNumberOverflow() {
+        String testString = "32769";
+        inputStream.setInputString(testString);
+        CToken token1 = tokenizer.getNextToken(cpContext);
+        helper.checkToken("token 1", token1, CToken.TK_ILL, "32769", 1, 1);
         CToken token2 = tokenizer.getNextToken(cpContext);
         helper.checkToken("token 2", token2, CToken.TK_EOF, "end_of_file", 1, 6);
     }
