@@ -62,7 +62,7 @@ public class SemanticCheckAddressTest {
     // 意味解析 正当
     @Test
     public void semanticCheckAddressAddAccept() throws FatalErrorException {
-        String[] testDataArr = { "2 + 1" };
+        String[] testDataArr = { "2 + 1", "2+&1", "&2+1" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
