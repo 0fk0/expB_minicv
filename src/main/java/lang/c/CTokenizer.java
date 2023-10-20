@@ -132,7 +132,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 
 						String num_10_str = text.toString();
 						int num_10_int = Integer.parseInt(num_10_str);
-						if (-(1 << 15) <= num_10_int && num_10_int <= (1 << 15) - 1) {
+						if (-(1 << 15) <= num_10_int && num_10_int <= (1 << 15)) {
 							tk = new CToken(CToken.TK_NUM, lineNo, startCol, num_10_str);
 							accept = true;
 						} else {

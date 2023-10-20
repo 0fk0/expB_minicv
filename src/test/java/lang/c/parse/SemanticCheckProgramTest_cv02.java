@@ -109,7 +109,7 @@ public class SemanticCheckProgramTest_cv02 {
     
     @Test
     public void FactorWithPlusSignOverflow() throws FatalErrorException {
-        String[] testDataArr = {"32768", "-32769"};
+        String[] testDataArr = {"32769"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -122,13 +122,13 @@ public class SemanticCheckProgramTest_cv02 {
                 fail("Failed with " + testData);
             } catch ( FatalErrorException e ) {
                 assertThat(e.getMessage(), containsString("factorに続く構文はfactorAmpかnumberです"));
-            }    
+            }
         }
     }
 
     @Test
     public void FactorWithPlusSignNotOverflow() throws FatalErrorException {
-        String[] testDataArr = {"32767", "-32768"}; // 第二回の段階では負の数はテスト不可
+        String[] testDataArr = {"32768"}; // 第二回の段階では負の数はテスト不可
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
