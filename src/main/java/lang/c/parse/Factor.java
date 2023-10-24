@@ -13,7 +13,7 @@ public class Factor extends CParseRule {
 	}
 
 	public static boolean isFirst(CToken tk) {
-		return (PlusFactor.isFirst(tk) || MinusFactor.isFirst(tk) || UndesignedFactor.isFirst(tk));
+		return (PlusFactor.isFirst(tk) || MinusFactor.isFirst(tk) || UnsignedFactor.isFirst(tk));
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -26,8 +26,8 @@ public class Factor extends CParseRule {
 		} else if (MinusFactor.isFirst(tk)){
 			minusFactor = new FactorAmp(pcx);
 			minusFactor.parse(pcx);
-		} else if (UndesignedFactor.isFirst(tk)){
-			unsiginedFactor = new UndesignedFactor(pcx);
+		} else if (UnsignedFactor.isFirst(tk)){
+			unsiginedFactor = new UnsignedFactor(pcx);
 			unsiginedFactor.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "factorに続く構文はplusFactorかminusFactorかunsignedFactorです");
