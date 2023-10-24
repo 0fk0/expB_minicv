@@ -9,7 +9,7 @@ import lang.c.CTokenizer;
 class PlusFactor extends CParseRule {
 	// plusFactor ::= PLUS unsignedFactor
 	CToken op;
-	CParseRule undesignFactor;
+	CParseRule unsignedFactor;
 
 	public PlusFactor(CParseContext pcx) {
 	}
@@ -24,25 +24,25 @@ class PlusFactor extends CParseRule {
 		op = ct.getCurrentToken(pcx);
 		// +の次の字句を読む
 		CToken tk = ct.getNextToken(pcx);
-		if (UndesignedFactor.isFirst(tk)) {
-			undesignFactor = new Term(pcx);
-			undesignFactor.parse(pcx);
+		if (UnsignedFactor.isFirst(tk)) {
+			unsignedFactor = new UnsignedFactor(pcx);
+			unsignedFactor.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "+の後ろはundesignfactorです");
 		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (undesignFactor != null) {
-			undesignFactor.semanticCheck(pcx);
-			setCType(undesignFactor.getCType()); // number の型をそのままコピー
-			setConstant(undesignFactor.isConstant()); // number は常に定数
+		if (unsignedFactor != null) {
+			unsignedFactor.semanticCheck(pcx);
+			setCType(unsignedFactor.getCType()); // number の型をそのままコピー
+			setConstant(unsignedFactor.isConstant()); // number は常に定数
 		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		if (undesignFactor != null) {
-			undesignFactor.codeGen(pcx);
+		if (unsignedFactor != null) {
+			unsignedFactor.codeGen(pcx);
 		}
 	}
 }
