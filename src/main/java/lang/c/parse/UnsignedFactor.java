@@ -5,12 +5,12 @@ import java.io.PrintStream;
 import lang.*;
 import lang.c.*;
 
-public class UndesignedFactor extends CParseRule {
+public class UnsignedFactor extends CParseRule {
 	// unsignedFactor ::= factorAmp | number | LPAR expression RPAR
 	CParseRule factorAmp, number, expression;
 	CToken lpar, rpar;
 
-	public UndesignedFactor(CParseContext pcx) {
+	public UnsignedFactor(CParseContext pcx) {
 	}
 
 	public static boolean isFirst(CToken tk) {
