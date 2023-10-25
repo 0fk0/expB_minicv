@@ -66,7 +66,7 @@ public class ParseFactorTest {
                 cp.parse(cpContext);
                 fail("Error should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down a part of error sentence you have decided on here"));
+                assertThat(e.getMessage(), containsString("プログラムの最後にゴミがあります"));
             }
         }
     }
@@ -85,7 +85,7 @@ public class ParseFactorTest {
                 cp.parse(cpContext);
                 fail("Error should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down a part of error sentence you have decided on here"));
+                assertThat(e.getMessage(), containsString("(expressioin の後ろは ) です"));
             }
         }
     }
@@ -104,7 +104,7 @@ public class ParseFactorTest {
                 cp.parse(cpContext);
                 fail("Error should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down a part of error sentence you have decided on here"));
+                assertThat(e.getMessage(), containsString("( の後ろはexpressionです"));
             }
         }
     }
@@ -123,7 +123,7 @@ public class ParseFactorTest {
                 cp.parse(cpContext);
                 fail("Error should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down a part of error sentence you have decided on here"));
+                assertThat(e.getMessage(), containsString("-の後ろはundesignfactorです"));
             }
         }
     }

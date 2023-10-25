@@ -51,15 +51,17 @@ public class CodeGenExpressionTest_cv03 {
     public void codeGenTermMultWithParentheses() throws FatalErrorException {
         inputStream.setInputString("(1+2)*3");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#1, (R6)+",
+            "	MOV	#2, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	ADD	R1, R0",
+            "	MOV	R0, (R6)+",
+            "	MOV	#3, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	JSR	MUL",
+            "	MOV	R2, (R6)+"
         };
 
         // Check only code portion, not validate comments
@@ -71,15 +73,17 @@ public class CodeGenExpressionTest_cv03 {
     public void codeGenTermMultPriority() throws FatalErrorException {
         inputStream.setInputString("1+2*3");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#1, (R6)+",
+            "	MOV	#2, (R6)+",
+            "	MOV	#3, (R6)+",
+            "	MOV -(R6), R0",
+            "	MOV -(R6), R1",
+            "	JSR	MUL",
+            "	MOV	R2, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	ADD	R1, R0",
+            "	MOV	R0, (R6)+"
         };
 
         // Check only code portion, not validate comments
@@ -91,15 +95,17 @@ public class CodeGenExpressionTest_cv03 {
     public void codeGenTermDivWithParenthesis() throws FatalErrorException {
         inputStream.setInputString("1/(2-3)");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#1, (R6)+",
+            "	MOV	#2, (R6)+",
+            "	MOV	#3, (R6)+",
+            "	MOV -(R6), R0",
+            "	MOV -(R6), R1",
+            "	SUB R0, R1",
+            "	MOV	R1, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	JSR DIV",
+            "	MOV	R2, (R6)+"
         };
 
         // Check only code portion, not validate comments
@@ -111,15 +117,17 @@ public class CodeGenExpressionTest_cv03 {
     public void codeGenTermDivMinus() throws FatalErrorException {
         inputStream.setInputString("1/2-3");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#1, (R6)+",
+            "	MOV	#2, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	JSR	DIV",
+            "	MOV	R2, (R6)+",
+            "	MOV	#3, (R6)+",
+            "	MOV -(R6), R0",
+            "	MOV -(R6), R1",
+            "	SUB R0, R1",
+            "	MOV	R1, (R6)+"
         };
 
         // Check only code portion, not validate comments
@@ -131,15 +139,31 @@ public class CodeGenExpressionTest_cv03 {
     public void codeGenTermAllTest() throws FatalErrorException {
         inputStream.setInputString("(1+2)*3/-(4-5)");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#1, (R6)+",
+            "	MOV	#2, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	ADD	R1, R0",
+            "	MOV	R0, (R6)+",
+            "	MOV	#3, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	JSR	MUL",
+            "	MOV	R2, (R6)+",
+            "	MOV	#4, (R6)+",
+            "	MOV	#5, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	SUB R0, R1",
+            "	MOV	R1, (R6)+",
+            "   MOV -(R6), R0",
+			"   XOR #0xFFFF, R0",
+			"   ADD #1, R0",
+			"   MOV R0, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	JSR	DIV",
+            "	MOV	R2, (R6)+"
         };
 
         // Check only code portion, not validate comments
@@ -151,15 +175,21 @@ public class CodeGenExpressionTest_cv03 {
     public void codeGenTermSignTest() throws FatalErrorException {
         inputStream.setInputString("+4--5++2");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#4, (R6)+",
+            "	MOV	#5, (R6)+",
+            "   MOV -(R6), R0",
+			"   XOR #0xFFFF, R0",
+			"   ADD #1, R0",
+			"   MOV R0, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	SUB	R0, R1",
+            "	MOV	R1, (R6)+",
+            "	MOV	#2, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	ADD	R1, R0",
+            "	MOV	R0, (R6)+"
         };
 
         // Check only code portion, not validate comments

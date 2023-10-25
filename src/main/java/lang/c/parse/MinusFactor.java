@@ -26,7 +26,9 @@ class MinusFactor extends CParseRule {
 		op = ct.getCurrentToken(pcx);
 		// -の次の字句を読む
 		CToken tk = ct.getNextToken(pcx);
-		if (UnsignedFactor.isFirst(tk)) {
+		if (FactorAmp.isFirst(tk)) {
+			pcx.fatalError(tk.toExplainString() + "-の後ろに参照型は来ません");
+		} else if (UnsignedFactor.isFirst(tk)) {
 			unsignedFactor = new UnsignedFactor(pcx);
 			unsignedFactor.parse(pcx);
 		} else {
