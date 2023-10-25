@@ -19,17 +19,17 @@ public class Term extends CParseRule {
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		CParseRule factor = null, list = null;
-		factor = new Term(pcx);
+		factor = new Factor(pcx);
 		factor.parse(pcx);
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
-		while (TermMult.isFirst(tk) || TermDiv.isFirst(tk)) {
-			if (TermMult.isFirst(tk)) list = new TermMult(pcx, term);
-			if (TermDiv.isFirst(tk)) list = new TermDiv(pcx, term);
+		// while (TermMult.isFirst(tk) || TermDiv.isFirst(tk)) {
+			if (TermMult.isFirst(tk)) list = new TermMult(pcx, factor);
+			if (TermDiv.isFirst(tk)) list = new TermDiv(pcx, factor);
 			list.parse(pcx);
 			factor = list;
 			tk = ct.getCurrentToken(pcx);
-		}
+		// }
 		term = factor;
 	}
 

@@ -20,6 +20,20 @@ public class TermDiv extends CParseRule {
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
+		// ここにやってくるときは、必ずisFirst()が満たされている
+		CTokenizer ct = pcx.getTokenizer();
+		op = ct.getCurrentToken(pcx);
+		// /の次の字句を読む
+		CToken tk = ct.getNextToken(pcx);
+		if (Factor.isFirst(tk)) {
+			right = new Factor(pcx);
+			right.parse(pcx);
+		} else {
+			pcx.fatalError(tk.toExplainString() + "/の後ろはfactorです");
+		}
+	}
+
+	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		// 割り算の型計算規則
 		final int s[][] = {
 			// T_err T_int T_pint
@@ -42,23 +56,15 @@ public class TermDiv extends CParseRule {
 		}
 	}
 
-	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (factor != null) {
-			factor.semanticCheck(pcx);
-			this.setCType(factor.getCType()); // factor の型をそのままコピー
-			this.setConstant(factor.isConstant());
-		}
-	}
-
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		if (left != null && right != null) {
 			left.codeGen(pcx); // 左部分木のコード生成を頼む
 			right.codeGen(pcx); // 右部分木のコード生成を頼む
-			o.println("\tMOV\t-(R6), R0\t; ExpressionAdd: ２数を取り出して、足し、積む<" + op.toExplainString() + ">");
-			o.println("\tMOV\t-(R6), R1\t; ExpressionAdd:");
-			o.println("\tADD\tR1, R0\t; ExpressionAdd:");
-			o.println("\tMOV\tR0, (R6)+\t; ExpressionAdd:");
+			o.println("\tMOV\t-(R6), R0\t; TermDiv: ２数を取り出して、割った余りを積む<" + op.toExplainString() + ">");
+			o.println("\tMOV\t-(R6), R1\t; TermDiv:");
+			o.println("\tJSR\tDIV\t; TermDiv: R2に戻り値を入れるとする");
+			o.println("\tMOV\tR2, (R6)+\t; TermDiv:");
 		}
 	}
 }

@@ -60,10 +60,10 @@ public class TermMult extends CParseRule {
 		if (left != null && right != null) {
 			left.codeGen(pcx); // 左部分木のコード生成を頼む
 			right.codeGen(pcx); // 右部分木のコード生成を頼む
-			o.println("\tMOV\t-(R6), R0\t; ExpressionAdd: ２数を取り出して、足し、積む<" + op.toExplainString() + ">");
-			o.println("\tMOV\t-(R6), R1\t; ExpressionAdd:");
-			o.println("\tADD\tR1, R0\t; ExpressionAdd:");
-			o.println("\tMOV\tR0, (R6)+\t; ExpressionAdd:");
+			o.println("\tMOV\t-(R6), R0\t; TermMult: ２数を取り出して、掛け、積む<" + op.toExplainString() + ">");
+			o.println("\tMOV\t-(R6), R1\t; TermMult:");
+			o.println("\tJSR\tMUL\t; TermMult: R2に戻り値を入れるとする");
+			o.println("\tMOV\tR2, (R6)+\t; TermMult:");
 		}
 	}
 }
