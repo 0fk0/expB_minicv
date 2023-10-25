@@ -33,6 +33,7 @@ public class UnsignedFactor extends CParseRule {
 			tk = ct.getNextToken(pcx);
 			if (Expression.isFirst(tk)) {
 				expression = new Expression(pcx);
+				expression.parse(pcx);
 			} else {
 				pcx.fatalError(tk.toExplainString() + "( の後ろはexpressionです");
 			}
@@ -43,18 +44,25 @@ public class UnsignedFactor extends CParseRule {
 			} else {
 				pcx.fatalError(tk.toExplainString() + "(expressioin の後ろは ) です");
 			}
-
-			expression.parse(pcx);
+			ct.getNextToken(pcx); // )は構文規則ではないので自動でトークンを次に移してくれない
 		} else {
 			pcx.fatalError(tk.toExplainString() + "factorに続く構文はfactorAmpかnumberか(expression)です");
 		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (number != null) {
+		if (factorAmp != null) {
+			factorAmp.semanticCheck(pcx);
+			setCType(factorAmp.getCType());
+			setConstant(factorAmp.isConstant());
+	 	} else if (number != null) {
 			number.semanticCheck(pcx);
-			setCType(number.getCType()); // number の型をそのままコピー
-			setConstant(number.isConstant()); // number は常に定数
+			setCType(number.getCType());
+			setConstant(number.isConstant());
+		} else if (expression != null) {
+			expression.semanticCheck(pcx);
+			setCType(expression.getCType());
+			setConstant(expression.isConstant());
 		}
 	}
 

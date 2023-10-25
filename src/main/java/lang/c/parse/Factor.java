@@ -13,7 +13,7 @@ public class Factor extends CParseRule {
 	}
 
 	public static boolean isFirst(CToken tk) {
-		return (PlusFactor.isFirst(tk) || MinusFactor.isFirst(tk) || UnsignedFactor.isFirst(tk));
+		return (/*PlusFactor.isFirst(tk) ||*/ MinusFactor.isFirst(tk) || UnsignedFactor.isFirst(tk));
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -21,10 +21,10 @@ public class Factor extends CParseRule {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
 		if (PlusFactor.isFirst(tk)){
-			plusFactor = new Number(pcx);
+			plusFactor = new PlusFactor(pcx);
 			plusFactor.parse(pcx);
 		} else if (MinusFactor.isFirst(tk)){
-			minusFactor = new FactorAmp(pcx);
+			minusFactor = new MinusFactor(pcx);
 			minusFactor.parse(pcx);
 		} else if (UnsignedFactor.isFirst(tk)){
 			unsiginedFactor = new UnsignedFactor(pcx);

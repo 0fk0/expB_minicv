@@ -1,5 +1,7 @@
 package lang.c.parse;
 
+import java.io.PrintStream;
+
 import lang.FatalErrorException;
 import lang.c.CParseContext;
 import lang.c.CParseRule;
@@ -15,7 +17,7 @@ class MinusFactor extends CParseRule {
 	}
 
 	public static boolean isFirst(CToken tk) {
-		return tk.getType() == CToken.TK_MINUS;
+		return (tk.getType() == CToken.TK_MINUS);
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -41,8 +43,13 @@ class MinusFactor extends CParseRule {
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
+		PrintStream o = pcx.getIOContext().getOutStream();
 		if (unsignedFactor != null) {
 			unsignedFactor.codeGen(pcx);
+			o.println("\tMOV\t-(R6), R0\t; MinusFactor: 数を取り出して負の補数表現にして積む<" + op.toExplainString() + ">");
+			o.println("\tXOR\t#0xFFFF, R0\t; MinusFactor: XORでビット反転");
+			o.println("\tADD\t#1, R0\t; MinusFactor: +1");
+			o.println("\tMOV\tR0, (R6)+\t; MinusFactor:");
 		}
 	}
 }

@@ -227,11 +227,11 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						accept = true;
 					}
 					break;
-				case LPAR_STATE: // +を読んだ
+				case LPAR_STATE: // (を読んだ
 					tk = new CToken(CToken.TK_LPAR, lineNo, startCol, "(");
 					accept = true;
 					break;
-				case RPAR_STATE: // +を読んだ
+				case RPAR_STATE: // )を読んだ
 					tk = new CToken(CToken.TK_RPAR, lineNo, startCol, ")");
 					accept = true;
 					break;

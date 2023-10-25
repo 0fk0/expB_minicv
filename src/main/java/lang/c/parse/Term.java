@@ -23,13 +23,13 @@ public class Term extends CParseRule {
 		factor.parse(pcx);
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
-		// while (TermMult.isFirst(tk) || TermDiv.isFirst(tk)) {
+		while (TermMult.isFirst(tk) || TermDiv.isFirst(tk)) {
 			if (TermMult.isFirst(tk)) list = new TermMult(pcx, factor);
 			if (TermDiv.isFirst(tk)) list = new TermDiv(pcx, factor);
 			list.parse(pcx);
 			factor = list;
 			tk = ct.getCurrentToken(pcx);
-		// }
+		}
 		term = factor;
 	}
 
