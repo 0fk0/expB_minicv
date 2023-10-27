@@ -67,7 +67,7 @@ public class SemanticCheckUnsignedFactorTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("-の後ろに参照型は来ません"));
+                assertThat(e.getMessage(), containsString("-の後に型[int*]は許可されません"));
             }
         }
     }

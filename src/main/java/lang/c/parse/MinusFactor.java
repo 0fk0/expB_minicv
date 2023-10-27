@@ -7,6 +7,7 @@ import lang.c.CParseContext;
 import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenizer;
+import lang.c.CType;
 
 class MinusFactor extends CParseRule {
 	// plusFactor ::= MINUS unsignedFactor
@@ -26,9 +27,7 @@ class MinusFactor extends CParseRule {
 		op = ct.getCurrentToken(pcx);
 		// -の次の字句を読む
 		CToken tk = ct.getNextToken(pcx);
-		if (FactorAmp.isFirst(tk)) {
-			pcx.fatalError(tk.toExplainString() + "-の後ろに参照型は来ません");
-		} else if (UnsignedFactor.isFirst(tk)) {
+		if (UnsignedFactor.isFirst(tk)) {
 			unsignedFactor = new UnsignedFactor(pcx);
 			unsignedFactor.parse(pcx);
 		} else {
@@ -37,10 +36,16 @@ class MinusFactor extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
+		final int s[] = { CType.T_err, CType.T_int, CType.T_pint };
 		if (unsignedFactor != null) {
 			unsignedFactor.semanticCheck(pcx);
-			setCType(unsignedFactor.getCType()); // number の型をそのままコピー
-			setConstant(unsignedFactor.isConstant()); // number は常に定数
+			int uf = unsignedFactor.getCType().getType(); // unsignedFactorの型
+			int nt = s[uf];
+			if (nt == CType.T_pint) {
+				pcx.fatalError("-の後に型[" + unsignedFactor.getCType().toString() + "]は許可されません");
+			}
+			this.setCType(CType.getCType(nt));
+			this.setConstant(unsignedFactor.isConstant()); // +の左右両方が定数のときだけ定数
 		}
 	}
 
