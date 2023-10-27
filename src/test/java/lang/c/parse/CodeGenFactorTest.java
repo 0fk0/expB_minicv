@@ -60,4 +60,61 @@ public class CodeGenFactorTest {
         helper.checkCodeGen(expected, rule, cpContext);
     }
 
+    @Test
+    public void codeGenFactorPlus() throws FatalErrorException {
+        inputStream.setInputString("+2");  // Test for "2"
+        String expected[] = {
+            ";;; factor starts",
+            ";;; number starts",
+            "	MOV	#2, (R6)+	; Number: 数を積む[[1行目,1文字目の'2']]",
+            ";;; number completes",
+            ";;; factor completes"
+        };
+
+        // Check only code portion, not validate comments
+        CParseRule rule = new Factor(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
+
+    @Test
+    public void codeGenFactorMinus() throws FatalErrorException {
+        inputStream.setInputString("-2");  // Test for "2"
+        String expected[] = {
+            ";;; factor starts",
+            ";;; number starts",
+            "	MOV	#2, (R6)+	; Number: 数を積む[[1行目,1文字目の'2']]",
+            "   MOV -(R6), R0",
+			"   XOR #0xFFFF, R0",
+			"   ADD #1, R0",
+			"   MOV R0, (R6)+",
+            ";;; number completes",
+            ";;; factor completes"
+        };
+
+        // Check only code portion, not validate comments
+        CParseRule rule = new Factor(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
+
+    @Test
+    public void codeGenFactorCul() throws FatalErrorException {
+        inputStream.setInputString("(2+3)");  // Test for "2"
+        String expected[] = {
+            ";;; factor starts",
+            ";;; number starts",
+            "	MOV	#2, (R6)+",
+            "	MOV	#3, (R6)+",
+            "	MOV	-(R6), R0",
+            "	MOV	-(R6), R1",
+            "	ADD	R1, R0",
+            "	MOV	R0, (R6)+",
+            ";;; number completes",
+            ";;; factor completes"
+        };
+
+        // Check only code portion, not validate comments
+        CParseRule rule = new Factor(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
+
 }
