@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import lang.FatalErrorException;
@@ -77,7 +78,7 @@ public class ParseExpressionTest {
     }
 
     // 実験3以降はこのメソッドを削除してください
-    @Test
+    @Test @Ignore
     public void parseErrorNoneSubNum()  {
         String[] testDataArr = {"-3"};
         for ( String testData: testDataArr ) {
@@ -108,7 +109,7 @@ public class ParseExpressionTest {
     }
 
     // 実験3以降はこのメソッドを削除してください
-    @Test
+    @Test @Ignore
     public void parseErrorOnlyPlus()  {
         String[] testDataArr = {"+"};
         for ( String testData: testDataArr ) {
