@@ -58,9 +58,8 @@ public class CodeGenExpressionTest_cv03 {
             "	ADD	R1, R0",
             "	MOV	R0, (R6)+",
             "	MOV	#3, (R6)+",
-            "	MOV	-(R6), R0",
-            "	MOV	-(R6), R1",
             "	JSR	MUL",
+            "   SUB #2, R6",
             "	MOV	R2, (R6)+"
         };
 
@@ -76,9 +75,8 @@ public class CodeGenExpressionTest_cv03 {
             "	MOV	#1, (R6)+",
             "	MOV	#2, (R6)+",
             "	MOV	#3, (R6)+",
-            "	MOV -(R6), R0",
-            "	MOV -(R6), R1",
             "	JSR	MUL",
+            "   SUB #2, R6",
             "	MOV	R2, (R6)+",
             "	MOV	-(R6), R0",
             "	MOV	-(R6), R1",
@@ -102,9 +100,8 @@ public class CodeGenExpressionTest_cv03 {
             "	MOV -(R6), R1",
             "	SUB R0, R1",
             "	MOV	R1, (R6)+",
-            "	MOV	-(R6), R0",
-            "	MOV	-(R6), R1",
             "	JSR DIV",
+            "   SUB #2, R6",
             "	MOV	R2, (R6)+"
         };
 
@@ -119,9 +116,8 @@ public class CodeGenExpressionTest_cv03 {
         String expected[] = {
             "	MOV	#1, (R6)+",
             "	MOV	#2, (R6)+",
-            "	MOV	-(R6), R0",
-            "	MOV	-(R6), R1",
             "	JSR	DIV",
+            "   SUB #2, R6",
             "	MOV	R2, (R6)+",
             "	MOV	#3, (R6)+",
             "	MOV -(R6), R0",
@@ -146,9 +142,8 @@ public class CodeGenExpressionTest_cv03 {
             "	ADD	R1, R0",
             "	MOV	R0, (R6)+",
             "	MOV	#3, (R6)+",
-            "	MOV	-(R6), R0",
-            "	MOV	-(R6), R1",
             "	JSR	MUL",
+            "   SUB #2, R6",
             "	MOV	R2, (R6)+",
             "	MOV	#4, (R6)+",
             "	MOV	#5, (R6)+",
@@ -160,9 +155,8 @@ public class CodeGenExpressionTest_cv03 {
 			"   XOR #0xFFFF, R0",
 			"   ADD #1, R0",
 			"   MOV R0, (R6)+",
-            "	MOV	-(R6), R0",
-            "	MOV	-(R6), R1",
             "	JSR	DIV",
+            "   SUB #2, R6",
             "	MOV	R2, (R6)+"
         };
 

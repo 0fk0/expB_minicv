@@ -61,9 +61,8 @@ public class TermDiv extends CParseRule {
 		if (left != null && right != null) {
 			left.codeGen(pcx); // 左部分木のコード生成を頼む
 			right.codeGen(pcx); // 右部分木のコード生成を頼む
-			o.println("\tMOV\t-(R6), R0\t; TermDiv: ２数を取り出して、割った余りを積む<" + op.toExplainString() + ">");
-			o.println("\tMOV\t-(R6), R1\t; TermDiv:");
 			o.println("\tJSR\tDIV\t; TermDiv: R2に戻り値を入れるとする");
+			o.println("\tSUB\t#2, R6\t; TermDiv: 引数の分を戻す");
 			o.println("\tMOV\tR2, (R6)+\t; TermDiv:");
 		}
 	}

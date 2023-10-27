@@ -60,9 +60,8 @@ public class TermMult extends CParseRule {
 		if (left != null && right != null) {
 			left.codeGen(pcx); // 左部分木のコード生成を頼む
 			right.codeGen(pcx); // 右部分木のコード生成を頼む
-			o.println("\tMOV\t-(R6), R0\t; TermMult: ２数を取り出して、掛け、積む<" + op.toExplainString() + ">");
-			o.println("\tMOV\t-(R6), R1\t; TermMult:");
 			o.println("\tJSR\tMUL\t; TermMult: R2に戻り値を入れるとする");
+			o.println("\tSUB\t#2, R6; TermMult: 引数の分を戻す");
 			o.println("\tMOV\tR2, (R6)+\t; TermMult:");
 		}
 	}
