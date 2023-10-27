@@ -13,6 +13,27 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 	private char backCh;
 	private boolean backChExist = false;
 
+	// 各状態
+	private final int FIRST_STATE = 0;
+	private final int EOF_STATE = 1;
+	private final int OTHER_STATE = 2;
+	private final int DECIMAL_STATE = 3;
+	private final int PLUS_STATE = 4;
+	private final int MINUS_STATE = 5;
+	private final int ASTER_STATE = 6;
+	private final int SLASH_STATE = 7;
+	private final int COMMENT_ASTER_CLOSE_STATE = 8;
+	private final int COMMENT_SLASH_STATE = 9;
+	private final int COMMENT_ASTER_STATE = 10;
+	private final int HEX_OR_OCTAL_STATE = 11;
+	private final int HEX_STATE = 12;
+	private final int OCTAL_STATE = 13;
+	private final int AND_STATE = 14;
+	private final int LPAR_STATE = 15;
+	private final int RPAR_STATE = 16;
+
+
+
 	public CTokenizer(CTokenRule rule) {
 		this.rule = rule;
 		lineNo = 1;
@@ -81,48 +102,58 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 		boolean accept = false;
 		while (!accept) {
 			switch (state) {
-				case 0: // 初期状態
+				case FIRST_STATE: // 初期状態
 					ch = readChar();
 					if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
 					} else if (ch == (char) -1) { // EOF
 						startCol = colNo - 1;
-						state = 1;
+						state = EOF_STATE;
 					} else if (ch == '0') { 	  // 16進数 or 8進数 or 10進数0単体
 						startCol = colNo - 1;
 						text.append(ch);
-						state = 10;
+						state = HEX_OR_OCTAL_STATE;
 					} else if ('1' <= ch && ch <= '9') { // 数（10進数）の開始
 						startCol = colNo - 1;
 						text.append(ch);
-						state = 3;
+						state = DECIMAL_STATE;
 					} else if (ch == '+') { // 和
 						startCol = colNo - 1;
 						text.append(ch);
-						state = 4;
+						state = PLUS_STATE;
 					} else if (ch == '-') { // 差
 						startCol = colNo - 1;
 						text.append(ch);
-						state = 5;
+						state = MINUS_STATE;
+					} else if (ch == '*') { // 積	
+						startCol = colNo - 1;
+						text.append(ch);
+						state = ASTER_STATE;
 					} else if (ch == '/'){ // コメント化状態
-						state = 6;
+						state = SLASH_STATE;
 					} else if (ch == '&'){ // コメント化状態
 						startCol = colNo - 1;
-						state = 13;
+						state = AND_STATE;
+					} else if (ch == '('){ // (開始
+						startCol = colNo - 1;
+						state = LPAR_STATE;
+					} else if (ch == ')'){ // 終了)
+						startCol = colNo - 1;
+						state = RPAR_STATE;
 					} else { // ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
-						state = 2;
+						state = OTHER_STATE;
 					}
 					break;
-				case 1: // EOFを読んだ
+				case EOF_STATE: // EOFを読んだ
 					tk = new CToken(CToken.TK_EOF, lineNo, startCol, "end_of_file");
 					accept = true;
 					break;
-				case 2: // ヘンな文字を読んだ
+				case OTHER_STATE: // ヘンな文字を読んだ
 					tk = new CToken(CToken.TK_ILL, lineNo, startCol, text.toString());
 					accept = true;
 					break;
-				case 3: // 10進数状態
+				case DECIMAL_STATE: // 10進数状態
 					ch = readChar();
 					if (Character.isDigit(ch)) {
 						text.append(ch);
@@ -136,75 +167,27 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 							tk = new CToken(CToken.TK_NUM, lineNo, startCol, num_10_str);
 							accept = true;
 						} else {
-							state = 2; // オーバーフロー
+							state = OTHER_STATE; // オーバーフロー
 						}
 					}
 					break;
-				case 4: // +を読んだ
-					tk = new CToken(CToken.TK_PLUS, lineNo, startCol, "+");
-					accept = true;
-					break;
-				case 5: // -を読んだ
-					tk = new CToken(CToken.TK_MINUS, lineNo, startCol, "-");
-					accept = true;
-					break;
-				case 6: // /を読んだ
-					ch = readChar();
-					if (ch == '/') {
-						state = 8;
-					} else if (ch == '*'){
-						state = 9;
-					} else {
-						text.append(ch);
-						state = 2;
-					}
-					break;
-				case 7: // *を読んだ(コメント化状態)
-					ch = readChar();
-					if (ch == '/'){
-						state = 0;
-					} else if (ch == '*'){
-					} else if (ch == (char) -1) {
-						startCol = colNo - 1;
-						state = 1;
-					} else {
-						state = 9;
-					}
-					break;
-				case 8: // コメント化状態(//)
-					ch = readChar();
-					if (ch == '\n') {
-						state = 0;
-					} else if (ch == (char) -1) {
-						state = 1;
-					}
-					break;
-				case 9: // コメント化状態(/**/)
-					ch = readChar();
-					if (ch == '*'){
-						state = 7;
-					} else if (ch == (char) -1) {
-						state = 1;
-						lineNo = lineNo_EOF;
-					}
-					break;
-				case 10: // 16進数状態　or 8進数状態　or 10進数0単体
+				case HEX_OR_OCTAL_STATE: // 16進数状態　or 8進数状態　or 10進数0単体
 					ch = readChar();
 					if (ch == 'x'){
 						text.append(ch);
 						num_count = 0;
-						state = 11;
+						state = HEX_STATE;
 					} else if ('0' <= ch && ch <= '7') {
 						backChar(ch);
 						num_count = 0;
-						state = 12;
+						state = OCTAL_STATE;
 					} else {
 						backChar(ch);
 						tk = new CToken(CToken.TK_NUM, lineNo, startCol, text.toString());
 						accept = true;
 					}
 					break;
-				case 11: // 16進数状態
+				case HEX_STATE: // 16進数状態
 					ch = readChar();
 					num_count++;
 					if ('0' <= ch && ch <= '9' || 'A' <= ch && ch <= 'F' || 'a' <= ch && ch <= 'f') {
@@ -215,7 +198,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						num_count--;
 						// 0xのみの場合 | オーバーフロー
 						if (num_count == 0 || num_count > 4){
-							state = 2;
+							state = OTHER_STATE;
 							continue;
 						}
 
@@ -223,7 +206,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						accept = true;
 					}
 					break;
-				case 12: // 8進数状態
+				case OCTAL_STATE: // 8進数状態
 					ch = readChar();
 					num_count++;
 					if (num_count == 1) first_ch_8 = ch;
@@ -236,7 +219,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						num_count--;
 						// オーバーフロー
 						if (num_count >= 6 && !(num_count == 6 && first_ch_8 == '1')){
-							state = 2;
+							state = OTHER_STATE;
 							continue;
 						}
 
@@ -244,7 +227,70 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						accept = true;
 					}
 					break;
-				case 13: // &を読んだ
+				case LPAR_STATE: // (を読んだ
+					tk = new CToken(CToken.TK_LPAR, lineNo, startCol, "(");
+					accept = true;
+					break;
+				case RPAR_STATE: // )を読んだ
+					tk = new CToken(CToken.TK_RPAR, lineNo, startCol, ")");
+					accept = true;
+					break;
+				case PLUS_STATE: // +を読んだ
+					tk = new CToken(CToken.TK_PLUS, lineNo, startCol, "+");
+					accept = true;
+					break;
+				case MINUS_STATE: // -を読んだ
+					tk = new CToken(CToken.TK_MINUS, lineNo, startCol, "-");
+					accept = true;
+					break;
+				case ASTER_STATE: // -を読んだ
+					tk = new CToken(CToken.TK_MULT, lineNo, startCol, "*");
+					accept = true;
+					break;
+				case SLASH_STATE: // /を読んだ
+					ch = readChar();
+					if (ch == '/') { // //コメント
+						state = COMMENT_SLASH_STATE;
+					} else if (ch == '*'){ // /**/コメント
+						state = COMMENT_ASTER_STATE;
+					} else { // 割り算演算子
+						backChar(ch);
+						startCol = colNo - 1;
+						text.append('/');
+						tk = new CToken(CToken.TK_DIV, lineNo, startCol, "/");
+						accept = true;
+					}
+					break;
+				case COMMENT_ASTER_CLOSE_STATE: // /*のコメント化状態で*を読んだ
+					ch = readChar();
+					if (ch == '/'){
+						state = 0;
+					} else if (ch == '*'){
+					} else if (ch == (char) -1) {
+						startCol = colNo - 1;
+						state = EOF_STATE;
+					} else {
+						state = COMMENT_ASTER_STATE;
+					}
+					break;
+				case COMMENT_SLASH_STATE: // コメント化状態(//)
+					ch = readChar();
+					if (ch == '\n') {
+						state = 0;
+					} else if (ch == (char) -1) {
+						state = EOF_STATE;
+					}
+					break;
+				case COMMENT_ASTER_STATE: // コメント化状態(/**/)
+					ch = readChar();
+					if (ch == '*'){
+						state = COMMENT_ASTER_CLOSE_STATE;
+					} else if (ch == (char) -1) {
+						state = EOF_STATE;
+						lineNo = lineNo_EOF;
+					}
+					break;
+				case AND_STATE: // &を読んだ
 					tk = new CToken(CToken.TK_AMP, lineNo, startCol, "&");
 					accept = true;
 					break;

@@ -121,7 +121,7 @@ public class SemanticCheckProgramTest_cv02 {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData);
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("factorに続く構文はfactorAmpかnumberです"));
+                assertThat(e.getMessage(), containsString("factorに続く構文はplusFactorかminusFactorかunsignedFactorです"));
             }
         }
     }

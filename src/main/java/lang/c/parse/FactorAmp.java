@@ -14,7 +14,7 @@ public class FactorAmp extends CParseRule {
 	}
 
 	public static boolean isFirst(CToken tk) {
-		return tk.getType() == CToken.TK_AMP;
+		return (tk.getType() == CToken.TK_AMP);
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {

@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import lang.FatalErrorException;
@@ -23,7 +22,7 @@ import lang.c.CTokenizer;
  * Before Testing Semantic Check by using this testing class, All ParseTest must be passed.
  * Bacause this testing class uses parse method to create testing data.
  */
-public class ParseExpressionTest {
+public class SemanticCheckProgramTest_cv03 {
 
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
@@ -57,66 +56,57 @@ public class ParseExpressionTest {
         setUp();
     }
 
-    // (1) 整数型の扱い
     @Test
-    public void parseErrorNumPlusNone()  {
-        String[] testDataArr = {"1+"};
+    public void FactorWithMinusSignOverflow() throws FatalErrorException {
+        String[] testDataArr = {"-36769"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, Expression.isFirst(firstToken), is(true));
-            Expression cp = new Expression(cpContext);
-
+            assertThat("Failed with " + testData, Factor.isFirst(firstToken), is(true));
+            Factor cp = new Factor(cpContext);
             try {
                 cp.parse(cpContext);
-                fail("Failed with " + testData + ". FatalErrorException should be invoked");
+                cp.semanticCheck(cpContext);
+                fail("Failed with " + testData);
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("+の後ろはtermです"));
-            }
-        } 
-    }
-
-    // 実験3以降はこのメソッドを削除してください
-    @Test @Ignore
-    public void parseErrorNoneSubNum()  {
-        String[] testDataArr = {"-3"};
-        for ( String testData: testDataArr ) {
-            resetEnvironment();
-            inputStream.setInputString(testData);
-            CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, Expression.isFirst(firstToken), is(false));
+                assertThat(e.getMessage(), containsString("-の後ろはundesignfactorです"));
+            }    
         }
     }
 
     @Test
-    public void parseErrorNumMinusNone()  {
-        String[] testDataArr = {"3-"};
+    public void FactorWithSignNotOverflow() throws FatalErrorException {
+        String[] testDataArr = {"32767", "-32768"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, Expression.isFirst(firstToken), is(true));
-            Expression cp = new Expression(cpContext);
+            assertThat("Failed with " + testData, Factor.isFirst(firstToken), is(true));
+            Factor cp = new Factor(cpContext);
 
-            try {
-                cp.parse(cpContext);
-                fail("Failed with " + testData + ". FatalErrorException should be invoked");
-            } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("-の後ろはtermです"));
-            }
+            cp.parse(cpContext);
+            cp.semanticCheck(cpContext);
+            String errorOutput = errorOutputStream.getPrintBufferString();
+            assertThat(errorOutput, is(""));    
+
         }
     }
 
-    // 実験3以降はこのメソッドを削除してください
-    @Test @Ignore
-    public void parseErrorOnlyPlus()  {
-        String[] testDataArr = {"+"};
+    @Test
+    public void TermTypeOperationNoError() throws FatalErrorException {
+        String[] testDataArr = {"1*1", "1/1"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, Expression.isFirst(firstToken), is(false));
+            assertThat(Expression.isFirst(firstToken), is(true));
+            Expression cp = new Expression(cpContext);
+
+            cp.parse(cpContext);
+            cp.semanticCheck(cpContext);
+            String errorOutput = errorOutputStream.getPrintBufferString();
+            assertThat(errorOutput, is(""));    
         }
     }
 }
