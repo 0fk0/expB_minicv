@@ -36,15 +36,13 @@ class MinusFactor extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		final int s[] = { CType.T_err, CType.T_int, CType.T_pint };
 		if (unsignedFactor != null) {
 			unsignedFactor.semanticCheck(pcx);
 			int uf = unsignedFactor.getCType().getType(); // unsignedFactorの型
-			int nt = s[uf];
-			if (nt == CType.T_pint) {
+			if (uf == CType.T_pint) {
 				pcx.fatalError("-の後に型[" + unsignedFactor.getCType().toString() + "]は許可されません");
 			}
-			this.setCType(CType.getCType(nt));
+			this.setCType(CType.getCType(uf));
 			this.setConstant(unsignedFactor.isConstant()); // +の左右両方が定数のときだけ定数
 		}
 	}
