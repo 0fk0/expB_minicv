@@ -87,7 +87,7 @@ public class SemanticCheckPrimaryTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData);
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("pint"));
+                assertThat(e.getMessage(), containsString("*の後に型[int]は許可されません"));
             }    
         }
     }

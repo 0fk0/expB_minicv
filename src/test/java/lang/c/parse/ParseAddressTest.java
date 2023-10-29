@@ -70,7 +70,7 @@ public class ParseAddressTest {
                 cp.parse(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("&の後ろはnumberです"));
+                assertThat(e.getMessage(), containsString("&の後ろはnumberかprimaryです"));
             }
         } 
     }

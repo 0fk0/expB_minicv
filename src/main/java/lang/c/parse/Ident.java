@@ -37,7 +37,7 @@ public class Ident extends CParseRule {
 			}
 		}
 
-		CType settingType = CType.getCType(CType.T_int);
+		CType settingType = null;
 		boolean isConstant = true;
 		switch (ident_type){
 			case "i":

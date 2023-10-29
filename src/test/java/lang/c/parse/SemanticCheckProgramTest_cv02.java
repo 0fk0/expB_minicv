@@ -102,7 +102,7 @@ public class SemanticCheckProgramTest_cv02 {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData);
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("&の後ろはnumberです"));
+                assertThat(e.getMessage(), containsString("&の後ろはnumberかprimaryです"));
             }    
         }
     }

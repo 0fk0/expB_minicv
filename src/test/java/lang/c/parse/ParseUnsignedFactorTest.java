@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import lang.FatalErrorException;
@@ -65,7 +66,7 @@ public class ParseUnsignedFactorTest {
             rule.parse(cpContext);
             fail("FatalErrorException should be invoked");
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+            assertThat(e.getMessage(), containsString("ポインタ型の*の後ろはvariableです"));
         }
     }
 
@@ -80,7 +81,7 @@ public class ParseUnsignedFactorTest {
             rule.parse(cpContext);
             fail("FatalErrorException should be invoked");
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+            assertThat(e.getMessage(), containsString("[expressioin の後ろは ] です"));
         }
     }
 
@@ -95,7 +96,7 @@ public class ParseUnsignedFactorTest {
             rule.parse(cpContext);
             fail("FatalErrorException should be invoked");
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+            assertThat(e.getMessage(), containsString("(expressioin の後ろは ) です"));
         }
     }
 
@@ -116,7 +117,7 @@ public class ParseUnsignedFactorTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void parseVariableNotFulfillNotation() throws FatalErrorException {
         inputStream.setInputString("i+a");
         CToken firstToken = tokenizer.getNextToken(cpContext);
@@ -130,6 +131,22 @@ public class ParseUnsignedFactorTest {
         } catch ( NullPointerException e ) {
             assertThat(e.getMessage(), containsString("isCType"));
             assertThat(e.getMessage(), containsString("invoke"));
+        }
+    }
+
+    @Test
+    public void parseVariableNotFulfillNotationFatal() throws FatalErrorException {
+        inputStream.setInputString("i+a");
+        CToken firstToken = tokenizer.getNextToken(cpContext);
+        assertThat(Primary.isFirst(firstToken), is(true));
+        Primary ruleNumber = new Primary(cpContext);
+        CParseRule rule = ruleNumber;
+        try {
+            rule.parse(cpContext);
+            rule.semanticCheck(cpContext);  // Error here.
+            fail("FatalErrorException should be invoked");
+        } catch ( FatalErrorException e ) {
+            assertThat(e.getMessage(), containsString("予期されない識別子です"));
         }
     }
 }

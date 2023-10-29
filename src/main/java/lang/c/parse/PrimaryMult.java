@@ -32,8 +32,8 @@ public class PrimaryMult extends CParseRule {
 		if (variable != null) {
 			variable.semanticCheck(pcx);
 			int vartype = variable.getCType().getType();
-			if (vartype == CType.T_int || vartype == CType.T_int_array || vartype == CType.T_int_array) {
-				pcx.fatalError("*の後に型[" + variable.getCType().toString() + "]は許可されません");
+			if (vartype == CType.T_int || vartype == CType.T_int_array) {
+				pcx.fatalError("*の後に型[int]は許可されません");
 			} else {
 				this.setCType(CType.getCType(CType.T_int));
 				this.setConstant(false);
