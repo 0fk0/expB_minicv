@@ -35,8 +35,15 @@ public class FactorAmp extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (primary != null && (primary instanceof PrimaryMult)) {
-			pcx.fatalError("&の後にポインタ変数は許可されません");
+		if (primary != null) {
+			primary.semanticCheck(pcx);
+			if (primary instanceof PrimaryMult){
+				pcx.fatalError("&の後に*は許可されません");
+			} else if (primary.getCType().getType() == CType.T_pint){
+				pcx.fatalError("&の後の参照型(ポインタのポインタ)は許可されません");
+			}
+		} else if (number != null){
+			number.semanticCheck(pcx);
 		}
 		this.setCType(CType.getCType(CType.T_pint));
 		this.setConstant(true);

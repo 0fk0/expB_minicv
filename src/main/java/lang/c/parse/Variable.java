@@ -33,13 +33,20 @@ public class Variable extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (ident != null){
 			ident.semanticCheck(pcx);
+			if ((ident.getCType().getType() == CType.T_int || ident.getCType().getType() == CType.T_pint) && array != null){
+				pcx.fatalError("型[" + ident.getCType().toString() + "]の識別子の後にarrayは続きません");
+			} else if ((ident.getCType().getType() == CType.T_int_array || ident.getCType().getType() == CType.T_pint_array) && array == null){
+				pcx.fatalError("配列型[" + ident.getCType().toString() + "]の識別子の後にarrayが必要です");
+			} else if (ident.getCType().getType() == CType.T_pint && array != null){
+				pcx.fatalError("参照型の配列は許可されていません");
+			}
+
+			if (array != null) {
+				array.semanticCheck(pcx);
+			}
+
 			setCType(ident.getCType());
 			setConstant(ident.isConstant());
-		}
-		if (array != null) {
-			array.semanticCheck(pcx);;
-			setCType(array.getCType());
-			setConstant(array.isConstant());
 		}
 	}
 

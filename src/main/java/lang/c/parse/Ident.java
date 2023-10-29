@@ -25,10 +25,10 @@ public class Ident extends CParseRule {
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		String ident_type = "";
-		String ident_string = ident.getText();
+		String ident_str = ident.getText();
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < ident_string.length(); i++){
-			char ident_char = ident_string.charAt(i);
+		for (int i = 0; i < ident_str.length(); i++){
+			char ident_char = ident_str.charAt(i);
 			if (ident_char ==  '_'){
 				ident_type = sb.toString();
 				break;

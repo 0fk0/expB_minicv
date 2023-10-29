@@ -39,7 +39,7 @@ class MinusFactor extends CParseRule {
 		if (unsignedFactor != null) {
 			unsignedFactor.semanticCheck(pcx);
 			int uftype = unsignedFactor.getCType().getType(); // unsignedFactorの型
-			if (uftype == CType.T_pint) {
+			if (uftype != CType.T_int) {
 				pcx.fatalError("-の後に型[" + unsignedFactor.getCType().toString() + "]は許可されません");
 			} else {
 				setCType(unsignedFactor.getCType());
