@@ -6,8 +6,8 @@ import lang.*;
 import lang.c.*;
 
 public class UnsignedFactor extends CParseRule {
-	// unsignedFactor ::= factorAmp | number | LPAR expression RPAR
-	CParseRule factorAmp, number, expression;
+	// unsignedFactor ::= factorAmp | number | LPAR expression RPAR | addressToValue
+	CParseRule factorAmp, number, expression, addressToValue;
 	CToken lpar, rpar;
 
 	public UnsignedFactor(CParseContext pcx) {
@@ -45,8 +45,11 @@ public class UnsignedFactor extends CParseRule {
 				pcx.fatalError(tk.toExplainString() + "(expressioin の後ろは ) です");
 			}
 			ct.getNextToken(pcx); // )は構文規則ではないので自動でトークンを次に移してくれない
+		} else if (AddressToValue.isFirst(tk)){
+			addressToValue = new AddressToValue(pcx);
+			addressToValue.parse(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "factorに続く構文はfactorAmpかnumberか(expression)です");
+			pcx.fatalError(tk.toExplainString() + "factorに続く構文はfactorAmpかnumberか(expression)かaddressToValueです");
 		}
 	}
 
@@ -63,6 +66,10 @@ public class UnsignedFactor extends CParseRule {
 			expression.semanticCheck(pcx);
 			setCType(expression.getCType());
 			setConstant(expression.isConstant());
+		} else if (addressToValue != null) {
+			addressToValue.semanticCheck(pcx);
+			setCType(addressToValue.getCType());
+			setConstant(addressToValue.isConstant());
 		}
 	}
 
@@ -75,6 +82,8 @@ public class UnsignedFactor extends CParseRule {
 			factorAmp.codeGen(pcx);
 		} else if (lpar != null && rpar != null && expression != null) {
 			expression.codeGen(pcx);
+		} else if (addressToValue != null) {
+			addressToValue.codeGen(pcx);
 		}
 		o.println(";;; factor completes");
 	}

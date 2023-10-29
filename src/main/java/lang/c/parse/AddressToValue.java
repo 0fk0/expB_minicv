@@ -17,9 +17,20 @@ public class AddressToValue extends CParseRule {
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
+		CTokenizer ct = pcx.getTokenizer();
+		CToken tk = ct.getCurrentToken(pcx);
+		if (Primary.isFirst(tk)){
+			primary = new Primary(pcx);
+			primary.parse(pcx);
+		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
+		if (primary != null) {
+			primary.semanticCheck(pcx);
+			setCType(primary.getCType());
+			setConstant(primary.isConstant());
+		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {

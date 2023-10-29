@@ -35,6 +35,9 @@ public class FactorAmp extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
+		if (primary != null && (primary instanceof PrimaryMult)) {
+			pcx.fatalError("&の後にポインタ変数は許可されません");
+		}
 		this.setCType(CType.getCType(CType.T_pint));
 		this.setConstant(true);
 	}

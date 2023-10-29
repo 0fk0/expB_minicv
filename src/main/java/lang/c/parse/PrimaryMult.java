@@ -31,12 +31,13 @@ public class PrimaryMult extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (variable != null) {
 			variable.semanticCheck(pcx);
-			int type = variable.getCType().getType();
-			if (type == CType.T_pint  || type == CType.T_pint_array) {
-				pcx.fatalError(op.toExplainString() + "型[" + variable.getCType().toString() + "]はポインタ指定できません");
+			int vartype = variable.getCType().getType();
+			if (vartype == CType.T_int) {
+				pcx.fatalError("*の後に型[" + variable.getCType().toString() + "]は許可されません");
+			} else {
+				setCType(variable.getCType());
+				setConstant(variable.isConstant());
 			}
-			this.setCType(CType.getCType(type));
-			this.setConstant(variable.isConstant()); // +の左右両方が定数のときだけ定数
 		}
 	}
 

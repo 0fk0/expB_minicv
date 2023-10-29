@@ -23,7 +23,7 @@ public class Array extends CParseRule {
 		CToken tk = ct.getCurrentToken(pcx);
 		if (tk.getType() == CToken.TK_LBRA){
 			lbra = tk;
-			// ( の次の字句を読む
+			// [ の次の字句を読む
 			tk = ct.getNextToken(pcx);
 			if (Expression.isFirst(tk)) {
 				expression = new Expression(pcx);
@@ -38,7 +38,7 @@ public class Array extends CParseRule {
 			} else {
 				pcx.fatalError(tk.toExplainString() + "[expressioin の後ろは ] です");
 			}
-			ct.getNextToken(pcx); // )は構文規則ではないので自動でトークンを次に移してくれない
+			ct.getNextToken(pcx); // ]は構文規則ではないので自動でトークンを次に移してくれない
 		} else {
 			pcx.fatalError(tk.toExplainString() + "arrayに続く構文はは[expression]です");
 		}
@@ -47,8 +47,13 @@ public class Array extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (expression != null) {
 			expression.semanticCheck(pcx);
-			setCType(expression.getCType());
-			setConstant(expression.isConstant());
+			int extype = expression.getCType().getType(); // unsignedFactorの型
+			if (extype != CType.T_int) {
+				pcx.fatalError("[]の中で型[" + expression.getCType().toString() + "]は許可されません");
+			} else {
+				setCType(expression.getCType());
+				setConstant(expression.isConstant());
+			}
 		}
 	}
 
