@@ -7,7 +7,7 @@ import lang.c.*;
 
 public class FactorAmp extends CParseRule {
 	// factorAmp ::= AMP number
-	CParseRule number;
+	CParseRule number, primary;
 	CToken amp;
 
 	public FactorAmp(CParseContext pcx) {
@@ -24,10 +24,13 @@ public class FactorAmp extends CParseRule {
 		// numberを読み込む
 		CToken tk = ct.getNextToken(pcx);
 		if (Number.isFirst(tk)) {
-			number = new Term(pcx);
+			number = new Number(pcx);
 			number.parse(pcx);
+		} else if (Primary.isFirst(tk)) {
+			primary = new Primary(pcx);
+			primary.parse(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "&の後ろはnumberです");
+			pcx.fatalError(tk.toExplainString() + "&の後ろはnumberかprimaryです");
 		}
 	}
 
@@ -41,6 +44,8 @@ public class FactorAmp extends CParseRule {
 		o.println(";;; factorAmp starts");
 		if (number != null) {
 			number.codeGen(pcx);
+		} else if (primary != null){
+			primary.codeGen(pcx);
 		}
 		o.println(";;; factorAmp completes");
 	}

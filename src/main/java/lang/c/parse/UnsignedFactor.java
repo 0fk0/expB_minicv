@@ -14,7 +14,7 @@ public class UnsignedFactor extends CParseRule {
 	}
 
 	public static boolean isFirst(CToken tk) {
-		return (FactorAmp.isFirst(tk) || Number.isFirst(tk) || tk.getType() == CToken.TK_LPAR);
+		return (FactorAmp.isFirst(tk) || Number.isFirst(tk) || tk.getType() == CToken.TK_LPAR || AddressToValue.isFirst(tk));
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
