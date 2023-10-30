@@ -74,15 +74,7 @@ public class CodeGenIdentTest {
     public void codeGenPint() throws FatalErrorException {
         inputStream.setInputString("ip_a");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#ip_a, (R6)+ ; Ident: 変数アドレスを積む"
         };
 
         // Check only code portion, not validate comments
@@ -94,15 +86,9 @@ public class CodeGenIdentTest {
     public void codeGenMultPint() throws FatalErrorException {
         inputStream.setInputString("*ip_a");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#ip_a, (R6)+ ; Ident: 変数アドレスを積む",
+            "   MOV -(R6), R0 ; PrimaryMult: アドレスを取り出して、内容を参照して、積む",
+			"   MOV (R0), (R6)+ ; PrimaryMult:"
         };
 
         // Check only code portion, not validate comments
@@ -114,15 +100,12 @@ public class CodeGenIdentTest {
     public void codeGenArray() throws FatalErrorException {
         inputStream.setInputString("ia_a[3]");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#ia_a, (R6)+ ; Ident: 変数アドレスを積む",
+            "	MOV	#3, (R6)+ ; Ident: 変数アドレスを積む",
+            "   MOV -(R6), R0 ; Variable: 配列名とindexを取り出して配列先頭アドレスとindex分を足し、内容を参照して、積む",
+        	"   MOV -(R6), R1 ; Variable:",
+			"   ADD R0, R1 ; Variable:",
+			"   MOV (R1), (R6)+ ; Variable"
         };
 
         // Check only code portion, not validate comments

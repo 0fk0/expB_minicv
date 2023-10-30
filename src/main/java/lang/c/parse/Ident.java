@@ -65,6 +65,7 @@ public class Ident extends CParseRule {
 				isConstant = true;
 				break;
 			default:
+				settingType = CType.getCType(CType.T_err);
 				pcx.fatalError("予期されない識別子です");
 				break;
 		}

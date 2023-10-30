@@ -117,7 +117,7 @@ public class ParseUnsignedFactorTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void parseVariableNotFulfillNotation() throws FatalErrorException {
         inputStream.setInputString("i+a");
         CToken firstToken = tokenizer.getNextToken(cpContext);
@@ -127,24 +127,7 @@ public class ParseUnsignedFactorTest {
         try {
             rule.parse(cpContext);
             rule.semanticCheck(cpContext);  // Error here.
-            fail("NullPointerException should be invoked");
-        } catch ( NullPointerException e ) {
-            assertThat(e.getMessage(), containsString("isCType"));
-            assertThat(e.getMessage(), containsString("invoke"));
-        }
-    }
-
-    @Test
-    public void parseVariableNotFulfillNotationFatal() throws FatalErrorException {
-        inputStream.setInputString("i+a");
-        CToken firstToken = tokenizer.getNextToken(cpContext);
-        assertThat(Primary.isFirst(firstToken), is(true));
-        Primary ruleNumber = new Primary(cpContext);
-        CParseRule rule = ruleNumber;
-        try {
-            rule.parse(cpContext);
-            rule.semanticCheck(cpContext);  // Error here.
-            fail("FatalErrorException should be invoked");
+            fail("NullPointerException should not be invoked");
         } catch ( FatalErrorException e ) {
             assertThat(e.getMessage(), containsString("予期されない識別子です"));
         }
