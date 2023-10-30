@@ -55,9 +55,15 @@ public class Variable extends CParseRule {
 		o.println(";;; variable starts");
 		if (ident != null) {
 			ident.codeGen(pcx);
-		}
-		if (array != null){
-			array.codeGen(pcx);
+
+			if (array != null){
+				array.codeGen(pcx);
+			}
+			
+			o.println("\tMOV\t-(R6), R0\t; Variable: 配列名とindexを取り出して配列先頭アドレスとindex分を足し、内容を参照して、積む");
+			o.println("\tMOV\t-(R6), R1\t; Variable:");
+			o.println("\tADD\tR0, R1\t; Variable:");
+			o.println("\tMOV\t(R1), (R6)+\t; Variable:");
 		}
 		o.println(";;; variable completes");
 	}

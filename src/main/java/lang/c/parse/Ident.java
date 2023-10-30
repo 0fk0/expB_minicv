@@ -77,7 +77,7 @@ public class Ident extends CParseRule {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; number starts");
 		if (ident != null) {
-			o.println("\tMOV\t#" + ident.getText() + ", (R6)+\t; Ident: 数を積む<" + ident.toExplainString() + ">");
+			o.println("\tMOV\t#" + ident.getText() + ", (R6)+\t; Ident: 変数アドレスを積む<" + ident.toExplainString() + ">");
 		}
 		o.println(";;; number completes");
 	}
