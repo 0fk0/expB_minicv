@@ -50,15 +50,7 @@ public class CodeGenIdentTest {
     public void codeGenInt() throws FatalErrorException {
         inputStream.setInputString("i_a");
         String expected[] = {
-            "Write",
-            "down",
-            "the",
-            "output",
-            "you",
-            "have",
-            "decided",
-            "on",
-            "here"
+            "	MOV	#i_a, (R6)+ ; Ident: 変数アドレスを積む"
         };
 
         // Check only code portion, not validate comments
@@ -70,7 +62,7 @@ public class CodeGenIdentTest {
     public void codeGenAMPInt() throws FatalErrorException {
         inputStream.setInputString("&i_a");
         String expected[] = {
-            "Write down the output you have decided on here",
+            "	MOV	#i_a, (R6)+ ; Ident: 変数アドレスを積む"
         };
 
         // Check only code portion, not validate comments
