@@ -122,5 +122,43 @@ public class CodeGenIdentTest {
     }
 
     // Please copy and paste the above code and add the specified test case to the following
+    @Test
+    public void codeGenPintArray() throws FatalErrorException {
+        inputStream.setInputString("ipa_a[3]");
+        String expected[] = {
+            "	MOV	#ipa_a, (R6)+ ; Ident: 変数アドレスを積む",
+            "	MOV	#3, (R6)+ ; Ident: 変数アドレスを積む",
+            "   MOV -(R6), R0 ; Variable: 配列名とindexを取り出して配列先頭アドレスとindex分を足し、内容を参照して、積む",
+        	"   MOV -(R6), R1 ; Variable:",
+			"   ADD R0, R1 ; Variable:",
+			"   MOV R1, (R6)+ ; Variable",
+            "   MOV -(R6), R0; addressToValue: アドレスを取り出して、内容を参照して、積む",
+			"   MOV (R0), (R6)+; addressToValue:",
+        };
 
+        // Check only code portion, not validate comments
+        CParseRule rule = new UnsignedFactor(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
+
+    @Test
+    public void codeGenMultPintArray() throws FatalErrorException {
+        inputStream.setInputString("*ipa_a[3]");
+        String expected[] = {
+            "	MOV	#ipa_a, (R6)+ ; Ident: 変数アドレスを積む",
+            "	MOV	#3, (R6)+ ; Ident: 変数アドレスを積む",
+            "   MOV -(R6), R0 ; Variable: 配列名とindexを取り出して配列先頭アドレスとindex分を足し、内容を参照して、積む",
+        	"   MOV -(R6), R1 ; Variable:",
+			"   ADD R0, R1 ; Variable:",
+			"   MOV R1, (R6)+ ; Variable",
+            "   MOV -(R6), R0; addressToValue: アドレスを取り出して、内容を参照して、積む",
+			"   MOV (R0), (R6)+; addressToValue:",
+            "   MOV -(R6), R0 ; PrimaryMult: アドレスを取り出して、内容を参照して、積む",
+			"   MOV (R0), (R6)+ ; PrimaryMult:"
+        };
+
+        // Check only code portion, not validate comments
+        CParseRule rule = new UnsignedFactor(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
 }
