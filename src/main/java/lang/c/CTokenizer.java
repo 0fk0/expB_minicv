@@ -28,9 +28,12 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 	private final int HEX_OR_OCTAL_STATE = 11;
 	private final int HEX_STATE = 12;
 	private final int OCTAL_STATE = 13;
-	private final int AND_STATE = 14;
-	private final int LPAR_STATE = 15;
-	private final int RPAR_STATE = 16;
+	private final int IDENT_STATE = 14;
+	private final int AND_STATE = 15;
+	private final int LPAR_STATE = 16;
+	private final int RPAR_STATE = 17;
+	private final int LBRA_STATE = 18;
+	private final int RBRA_STATE = 19;
 
 
 
@@ -116,6 +119,10 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						startCol = colNo - 1;
 						text.append(ch);
 						state = DECIMAL_STATE;
+					} else if (('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_') { // 識別子の開始
+						startCol = colNo - 1;
+						text.append(ch);
+						state = IDENT_STATE;
 					} else if (ch == '+') { // 和
 						startCol = colNo - 1;
 						text.append(ch);
@@ -133,12 +140,18 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else if (ch == '&'){ // コメント化状態
 						startCol = colNo - 1;
 						state = AND_STATE;
-					} else if (ch == '('){ // (開始
+					} else if (ch == '('){ // ( 開始
 						startCol = colNo - 1;
 						state = LPAR_STATE;
-					} else if (ch == ')'){ // 終了)
+					} else if (ch == ')'){ // ( 終了
 						startCol = colNo - 1;
 						state = RPAR_STATE;
+					} else if (ch == '['){ // [ 開始
+						startCol = colNo - 1;
+						state = LBRA_STATE;
+					} else if (ch == ']'){ // ] 終了
+						startCol = colNo - 1;
+						state = RBRA_STATE;
 					} else { // ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
@@ -227,12 +240,31 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						accept = true;
 					}
 					break;
+				case IDENT_STATE: // 識別子状態
+					ch = readChar();
+					if (('0' <= ch && ch <= '9') || ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '_') {
+						text.append(ch);
+					} else {
+						// 識別子の終わり
+						backChar(ch); // 英数字か_を表さない文字は戻す（読まなかったことにする
+						tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
+						accept = true;
+					}
+					break;
 				case LPAR_STATE: // (を読んだ
 					tk = new CToken(CToken.TK_LPAR, lineNo, startCol, "(");
 					accept = true;
 					break;
 				case RPAR_STATE: // )を読んだ
 					tk = new CToken(CToken.TK_RPAR, lineNo, startCol, ")");
+					accept = true;
+					break;
+				case LBRA_STATE: // [を読んだ
+					tk = new CToken(CToken.TK_LBRA, lineNo, startCol, "[");
+					accept = true;
+					break;
+				case RBRA_STATE: // ]を読んだ
+					tk = new CToken(CToken.TK_RBRA, lineNo, startCol, "]");
 					accept = true;
 					break;
 				case PLUS_STATE: // +を読んだ

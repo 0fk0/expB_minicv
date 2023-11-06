@@ -18,12 +18,7 @@ import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
 
-/**
- * Before Testing Semantic Check by using this testing class, All ParseTest must be passed.
- * Bacause this testing class uses parse method to create testing data.
- */
-public class ParseAddressTest {
-
+public class ParseFactorAmpTest {
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
     PrintStreamForTest errorOutputStream;
@@ -55,24 +50,23 @@ public class ParseAddressTest {
         tearDown();
         setUp();
     }
-
+    
     @Test
-    public void parseAddressOnlyAMP()  {
-        String[] testDataArr = {"1+&"};
+    public void parseNotCloseRPAR() {
+        String[] testDataArr = {"&*ip_a"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, Expression.isFirst(firstToken), is(true));
-            Expression cp = new Expression(cpContext);
+            assertThat("Failed with " + testData, UnsignedFactor.isFirst(firstToken), is(true));
+            UnsignedFactor cp = new UnsignedFactor(cpContext);
 
             try {
                 cp.parse(cpContext);
-                fail("Failed with " + testData + ". FatalErrorException should be invoked");
+                fail("Error should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("&の後ろはnumberかprimaryです"));
+                assertThat(e.getMessage(), containsString("&の後に*は許可されません"));
             }
-        } 
+        }
     }
-
 }

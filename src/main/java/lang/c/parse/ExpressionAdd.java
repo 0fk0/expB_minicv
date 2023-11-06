@@ -40,9 +40,10 @@ class ExpressionAdd extends CParseRule {
 		// 足し算の型計算規則
 		final int s[][] = {
 				// T_err T_int T_pint
-				{ CType.T_err, CType.T_err, CType.T_err },  // T_err
-				{ CType.T_err, CType.T_int, CType.T_pint }, // T_int
-				{ CType.T_err, CType.T_pint, CType.T_err }, // T_pint
+				{ CType.T_err, CType.T_err, CType.T_err},  // T_err
+				{ CType.T_err, CType.T_int, CType.T_pint}, // T_int
+				{ CType.T_err, CType.T_pint, CType.T_err} // T_pint
+
 		};
 		if (left != null && right != null) {
 			left.semanticCheck(pcx);
@@ -53,9 +54,10 @@ class ExpressionAdd extends CParseRule {
 			if (nt == CType.T_err) {
 				pcx.fatalError(op.toExplainString() + "左辺の型[" + left.getCType().toString() + "]と右辺の型["
 						+ right.getCType().toString() + "]は足せません");
+			} else {
+				this.setCType(CType.getCType(nt));
+				this.setConstant(left.isConstant() && right.isConstant()); // +の左右両方が定数のときだけ定数
 			}
-			this.setCType(CType.getCType(nt));
-			this.setConstant(left.isConstant() && right.isConstant()); // +の左右両方が定数のときだけ定数
 		}
 	}
 
