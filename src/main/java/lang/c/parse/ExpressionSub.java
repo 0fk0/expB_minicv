@@ -42,9 +42,9 @@ class ExpressionSub extends CParseRule {
 				// T_err T_int T_pint T_int_array T_pint_array
 				{ CType.T_err, CType.T_err, CType.T_err, CType.T_err, CType.T_err },  // T_err
 				{ CType.T_err, CType.T_int, CType.T_err, CType.T_int, CType.T_err }, // T_int
-				{ CType.T_err, CType.T_pint, CType.T_int, CType.T_int, CType.T_int }, // T_pint
-				{ CType.T_err, CType.T_pint, CType.T_err, CType.T_int, CType.T_err }, // T_int_array
-				{ CType.T_err, CType.T_pint, CType.T_int, CType.T_int, CType.T_int } // T_pint_array
+				{ CType.T_err, CType.T_pint, CType.T_int, CType.T_pint, CType.T_int }, // T_pint
+				{ CType.T_err, CType.T_int, CType.T_err, CType.T_int, CType.T_err }, // T_int_array
+				{ CType.T_err, CType.T_pint, CType.T_int, CType.T_pint, CType.T_int } // T_pint_array
 		};
 		if (left != null && right != null) {
 			left.semanticCheck(pcx);

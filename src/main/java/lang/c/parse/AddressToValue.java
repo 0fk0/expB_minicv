@@ -38,6 +38,8 @@ public class AddressToValue extends CParseRule {
 		o.println(";;; addressToValue starts");
 		if (primary != null) {
 			primary.codeGen(pcx);
+			o.println("\tMOV\t-(R6), R0\t; addressToValue: アドレスを取り出して、内容を参照して、積む");
+			o.println("\tMOV\t(R0), (R6)+\t; addressToValue:");
 		}
 		o.println(";;; adressTovalue completes");
 	}
