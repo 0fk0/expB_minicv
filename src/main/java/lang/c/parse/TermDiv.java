@@ -36,12 +36,10 @@ public class TermDiv extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		// 割り算の型計算規則
 		final int s[][] = {
-			// T_err T_int T_pint T_int_array T_pint_array
-			{ CType.T_err, CType.T_err, CType.T_err, CType.T_err, CType.T_err },  // T_err
-			{ CType.T_err, CType.T_int, CType.T_err, CType.T_int, CType.T_err }, // T_int
-			{ CType.T_err, CType.T_err, CType.T_err, CType.T_err, CType.T_err }, // T_pint
-			{ CType.T_err, CType.T_int, CType.T_err, CType.T_int, CType.T_err }, // T_int_array
-			{ CType.T_err, CType.T_err, CType.T_err, CType.T_err, CType.T_err } // T_pint_array
+			// T_err T_int T_pint
+			{ CType.T_err, CType.T_err, CType.T_err},  // T_err
+			{ CType.T_err, CType.T_int, CType.T_err},  // T_int
+			{ CType.T_err, CType.T_err, CType.T_err},  // T_pint
 		};
 		if (left != null && right != null) {
 			left.semanticCheck(pcx);

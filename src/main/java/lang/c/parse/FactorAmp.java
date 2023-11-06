@@ -23,7 +23,9 @@ public class FactorAmp extends CParseRule {
 		amp = ct.getCurrentToken(pcx);
 		// numberを読み込む
 		CToken tk = ct.getNextToken(pcx);
-		if (Number.isFirst(tk)) {
+		if (tk.getType() == CToken.TK_MULT){
+			pcx.fatalError(tk.toExplainString() + "&の後に*は許可されません");
+	 	} else if (Number.isFirst(tk)) {
 			number = new Number(pcx);
 			number.parse(pcx);
 		} else if (Primary.isFirst(tk)) {
@@ -37,9 +39,7 @@ public class FactorAmp extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (primary != null) {
 			primary.semanticCheck(pcx);
-			if (primary instanceof PrimaryMult){
-				pcx.fatalError("&の後に*は許可されません");
-			} else if (primary.getCType().getType() == CType.T_pint){
+			if (primary.getCType().getType() == CType.T_pint){
 				pcx.fatalError("&の後の参照型(ポインタのポインタ)は許可されません");
 			}
 		} else if (number != null){

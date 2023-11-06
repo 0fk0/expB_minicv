@@ -259,7 +259,7 @@ public class SemanticCheckIdentifierTypeTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("左辺の型[int[]]と右辺の型[int*]は引けません"));
+                assertThat(e.getMessage(), containsString("左辺の型[int]と右辺の型[int*]は引けません"));
             }
         } 
     }
@@ -323,7 +323,7 @@ public class SemanticCheckIdentifierTypeTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("左辺の型[int*[]]と右辺の型[int*[]]は足せません"));
+                assertThat(e.getMessage(), containsString("左辺の型[int*]と右辺の型[int*]は足せません"));
             }
         } 
     }

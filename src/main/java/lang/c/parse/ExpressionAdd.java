@@ -39,12 +39,11 @@ class ExpressionAdd extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		// 足し算の型計算規則
 		final int s[][] = {
-				// T_err T_int T_pint Tnt_i_array T_pint_array
-				{ CType.T_err, CType.T_err, CType.T_err, CType.T_err, CType.T_err },  // T_err
-				{ CType.T_err, CType.T_int, CType.T_pint, CType.T_int, CType.T_pint }, // T_int
-				{ CType.T_err, CType.T_pint, CType.T_err, CType.T_pint, CType.T_err }, // T_pint
-				{ CType.T_err, CType.T_int, CType.T_pint, CType.T_int, CType.T_pint }, // T_int_array
-				{ CType.T_err, CType.T_pint, CType.T_err, CType.T_pint, CType.T_err } // T_pint_array
+				// T_err T_int T_pint
+				{ CType.T_err, CType.T_err, CType.T_err},  // T_err
+				{ CType.T_err, CType.T_int, CType.T_pint}, // T_int
+				{ CType.T_err, CType.T_pint, CType.T_err} // T_pint
+
 		};
 		if (left != null && right != null) {
 			left.semanticCheck(pcx);

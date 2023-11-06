@@ -45,7 +45,14 @@ public class Variable extends CParseRule {
 				array.semanticCheck(pcx);
 			}
 
-			setCType(ident.getCType());
+			if (ident.getCType().getType() == CType.T_int_array){
+				setCType(CType.getCType(CType.T_int));
+			} else if (ident.getCType().getType() == CType.T_pint_array){
+				setCType(CType.getCType(CType.T_pint));
+			} else {
+				setCType(ident.getCType());
+			}
+			
 			setConstant(ident.isConstant());
 		}
 	}

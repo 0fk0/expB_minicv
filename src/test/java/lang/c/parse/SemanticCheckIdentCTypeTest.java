@@ -59,7 +59,7 @@ public class SemanticCheckIdentCTypeTest {
     }
 
     @Test
-    public void type() throws FatalErrorException {
+    public void typeIdent() throws FatalErrorException {
         ArrayList<TestDataSet> testDataSetArr = new ArrayList<TestDataSet>();
         testDataSetArr.add(new TestDataSet("i_ABC", CType.T_int, false));
         testDataSetArr.add(new TestDataSet("ip_ABC", CType.T_pint, false));
@@ -73,6 +73,46 @@ public class SemanticCheckIdentCTypeTest {
             CToken firstToken = tokenizer.getNextToken(cpContext);
             assertThat("Failed with " + testDataSet.testData, Ident.isFirst(firstToken), is(true));
             Ident cp = new Ident(cpContext);
+
+            cp.parse(cpContext);
+            cp.semanticCheck(cpContext);
+            assertThat(testDataSet.testData, cp.getCType().getType(), is(testDataSet.type));
+            assertThat(testDataSet.testData, cp.isConstant(), is(testDataSet.isConstant));
+        } 
+    }
+
+    @Test
+    public void typeVariable() throws FatalErrorException {
+        ArrayList<TestDataSet> testDataSetArr = new ArrayList<TestDataSet>();
+        testDataSetArr.add(new TestDataSet("ia_ABC[123]", CType.T_int, false));
+        testDataSetArr.add(new TestDataSet("ipa_ABC[123]", CType.T_pint, false));
+        
+        for ( TestDataSet testDataSet: testDataSetArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testDataSet.testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat("Failed with " + testDataSet.testData, Variable.isFirst(firstToken), is(true));
+            Variable cp = new Variable(cpContext);
+
+            cp.parse(cpContext);
+            cp.semanticCheck(cpContext);
+            assertThat(testDataSet.testData, cp.getCType().getType(), is(testDataSet.type));
+            assertThat(testDataSet.testData, cp.isConstant(), is(testDataSet.isConstant));
+        } 
+    }
+
+    @Test
+    public void typePrimary() throws FatalErrorException {
+        ArrayList<TestDataSet> testDataSetArr = new ArrayList<TestDataSet>();
+        testDataSetArr.add(new TestDataSet("*ip_ABC", CType.T_int, false));
+        testDataSetArr.add(new TestDataSet("*ipa_ABC[123]", CType.T_int, false));
+        
+        for ( TestDataSet testDataSet: testDataSetArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testDataSet.testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat("Failed with " + testDataSet.testData, Primary.isFirst(firstToken), is(true));
+            Primary cp = new Primary(cpContext);
 
             cp.parse(cpContext);
             cp.semanticCheck(cpContext);
