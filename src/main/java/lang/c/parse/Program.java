@@ -8,6 +8,7 @@ import lang.c.*;
 
 public class Program extends CParseRule {
 	// program ::= { statement } EOF
+	CParseRule program; // コード生成テストでのエラー回避のために残している変数
 	ArrayList<CParseRule> statementList = new ArrayList<CParseRule>();
 
 	public Program(CParseContext pcx) {
