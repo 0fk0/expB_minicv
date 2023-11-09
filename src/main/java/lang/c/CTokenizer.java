@@ -34,6 +34,8 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 	private final int RPAR_STATE = 17;
 	private final int LBRA_STATE = 18;
 	private final int RBRA_STATE = 19;
+	private final int ASSIGN_STATE = 20;
+	private final int SEMI_STATE = 21;
 
 
 
@@ -64,7 +66,6 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 			colNo = 1;
 			++lineNo;
 		}
-		// System.out.print("'"+ch+"'("+(int)ch+")");
 		return ch;
 	}
 
@@ -152,6 +153,12 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else if (ch == ']'){ // ] 終了
 						startCol = colNo - 1;
 						state = RBRA_STATE;
+					} else if (ch == '='){ //  等号
+						startCol = colNo - 1;
+						state = ASSIGN_STATE;
+					} else if (ch == ';'){ //  セミコロン
+						startCol = colNo - 1;
+						state = SEMI_STATE;
 					} else { // ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
@@ -251,20 +258,28 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						accept = true;
 					}
 					break;
-				case LPAR_STATE: // (を読んだ
+				case LPAR_STATE: 	// (を読んだ
 					tk = new CToken(CToken.TK_LPAR, lineNo, startCol, "(");
 					accept = true;
 					break;
-				case RPAR_STATE: // )を読んだ
+				case RPAR_STATE: 	// )を読んだ
 					tk = new CToken(CToken.TK_RPAR, lineNo, startCol, ")");
 					accept = true;
 					break;
-				case LBRA_STATE: // [を読んだ
+				case LBRA_STATE: 	// [を読んだ
 					tk = new CToken(CToken.TK_LBRA, lineNo, startCol, "[");
 					accept = true;
 					break;
-				case RBRA_STATE: // ]を読んだ
+				case RBRA_STATE: 	// ]を読んだ
 					tk = new CToken(CToken.TK_RBRA, lineNo, startCol, "]");
+					accept = true;
+					break;
+				case ASSIGN_STATE: 	// =を読んだ
+					tk = new CToken(CToken.TK_ASSIGN, lineNo, startCol, "=");
+					accept = true;
+					break;
+				case SEMI_STATE:   	// ;を読んだ
+					tk = new CToken(CToken.TK_SEMI, lineNo, startCol, ";");
 					accept = true;
 					break;
 				case PLUS_STATE: // +を読んだ
