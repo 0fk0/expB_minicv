@@ -34,13 +34,11 @@ public class Statement extends CParseRule {
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		// PrintStream o = pcx.getIOContext().getOutStream();
-		// o.println(";;; statement starts");
-		// if (statement != null) {
-		// 	statement.codeGen(pcx);
-		// 	o.println("\tMOV\t-(R6), R0\t; statement: アドレスを取り出して、内容を参照して、積む");
-		// 	o.println("\tMOV\t(R0), (R6)+\t; statement:");
-		// }
-		// o.println(";;; statement completes");
+		PrintStream o = pcx.getIOContext().getOutStream();
+		o.println(";;; statement starts");
+		if (statement != null) {
+			statement.codeGen(pcx);
+		}
+		o.println(";;; statement completes");
 	}
 }

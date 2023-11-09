@@ -61,19 +61,16 @@ public class StatementAssign extends CParseRule {
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-	// 	PrintStream o = pcx.getIOContext().getOutStream();
-	// 	o.println(";;; variable starts");
-	// 	if (ident != null) {
-	// 		ident.codeGen(pcx);
+		PrintStream o = pcx.getIOContext().getOutStream();
+		o.println(";;; statementAssign starts");
+		if (primary != null && expression != null) {
+			primary.codeGen(pcx);
+			expression.codeGen(pcx);
 
-	// 		if (array != null){
-	// 			array.codeGen(pcx);
-	// 			o.println("\tMOV\t-(R6), R0\t; StatementAssign: 配列名とindexを取り出して配列先頭アドレスとindex分を足し、内容を参照して、積む");
-	// 			o.println("\tMOV\t-(R6), R1\t; StatementAssign:");
-	// 			o.println("\tADD\tR0, R1\t; StatementAssign:");
-	// 			o.println("\tMOV\tR1, (R6)+\t; StatementAssign:");
-	// 		}
-	// 	}
-	// 	o.println(";;; variable completes");
+			o.println("\tMOV\t-(R6), R0\t; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入");
+			o.println("\tMOV\t-(R6), R1\t; statementAssign:");
+			o.println("\tMOV\tR0, (R1)\t; statementAssign:");
+		}
+		o.println(";;; statementAssign completes");
 	}
 }
