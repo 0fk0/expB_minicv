@@ -97,8 +97,8 @@ public class SemanticCheckStatementAssignTest {
     // (1) 整数型の扱い
     // If it is difficult to understand, separate the test cases and create a new test.
     @Test
-    public void SemanticCheckAssignIntegerTypeError() throws FatalErrorException {
-        String[] testDataArr = { "*i_a=1;", "i_a[3]=1;", "i_a=&1;" };
+    public void SemanticCheckAssignIntegerTypeError1() throws FatalErrorException {
+        String[] testDataArr = { "*i_a=1;" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -111,7 +111,47 @@ public class SemanticCheckStatementAssignTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("*の後に型[int]は許可されません"));
+            }
+        } 
+    }
+
+    @Test
+    public void SemanticCheckAssignIntegerTypeError2() throws FatalErrorException {
+        String[] testDataArr = { "i_a[3]=1;" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat("Failed with " + testData, StatementAssign.isFirst(firstToken), is(true));
+            StatementAssign cp = new StatementAssign(cpContext);
+
+            try {
+                cp.parse(cpContext);
+                cp.semanticCheck(cpContext);
+                fail("Failed with " + testData + ". FatalErrorException should be invoked");
+            } catch ( FatalErrorException e ) {
+                assertThat(e.getMessage(), containsString("型[int]の識別子の後にarrayは続きません"));
+            }
+        } 
+    }
+
+    @Test
+    public void SemanticCheckAssignIntegerTypeError3() throws FatalErrorException {
+        String[] testDataArr = { "i_a=&1;" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat("Failed with " + testData, StatementAssign.isFirst(firstToken), is(true));
+            StatementAssign cp = new StatementAssign(cpContext);
+
+            try {
+                cp.parse(cpContext);
+                cp.semanticCheck(cpContext);
+                fail("Failed with " + testData + ". FatalErrorException should be invoked");
+            } catch ( FatalErrorException e ) {
+                assertThat(e.getMessage(), containsString("左辺の型[int]と右辺の型[int*]が一致しません"));
             }
         } 
     }
@@ -132,7 +172,7 @@ public class SemanticCheckStatementAssignTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("左辺の型[int*]と右辺の型[int]が一致しません"));
             }
         } 
     }
@@ -153,15 +193,15 @@ public class SemanticCheckStatementAssignTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("配列型[int[]]の識別子の後にarrayが必要です"));
             }
         } 
     }
 
     // (3) ポインタ配列型の扱い
     @Test
-    public void SemanticCheckAssignPointArrayTypeError() throws FatalErrorException {
-        String[] testDataArr = { "ipa_a=&1;", "ipa_a=ipa_a;", "*ipa_a[3]=&3;" };
+    public void SemanticCheckAssignPointArrayTypeError1() throws FatalErrorException {
+        String[] testDataArr = { "ipa_a=&1;", "ipa_a=ipa_a;" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -174,7 +214,27 @@ public class SemanticCheckStatementAssignTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("配列型[int*[]]の識別子の後にarrayが必要です"));
+            }
+        } 
+    }
+
+    @Test
+    public void SemanticCheckAssignPointArrayTypeError2() throws FatalErrorException {
+        String[] testDataArr = { "*ipa_a[3]=&3;" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat("Failed with " + testData, StatementAssign.isFirst(firstToken), is(true));
+            StatementAssign cp = new StatementAssign(cpContext);
+
+            try {
+                cp.parse(cpContext);
+                cp.semanticCheck(cpContext);
+                fail("Failed with " + testData + ". FatalErrorException should be invoked");
+            } catch ( FatalErrorException e ) {
+                assertThat(e.getMessage(), containsString("左辺の型[int]と右辺の型[int*]が一致しません"));
             }
         } 
     }
@@ -195,7 +255,7 @@ public class SemanticCheckStatementAssignTest {
                 cp.semanticCheck(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("左辺が定数で代入できません"));
             }
         } 
     }

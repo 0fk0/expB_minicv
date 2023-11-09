@@ -71,7 +71,7 @@ public class ParseStatementAssignTest {
                 cp.parse(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("代入文の最後には;が必要です"));
             }
         } 
     }
@@ -90,7 +90,7 @@ public class ParseStatementAssignTest {
                 cp.parse(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("変数の後には=が必要です"));
             }
         }
     }
@@ -110,7 +110,7 @@ public class ParseStatementAssignTest {
                 cp.parse(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("ポインタ型の*の後ろはvariableです"));
             }
         } 
     }
@@ -130,7 +130,7 @@ public class ParseStatementAssignTest {
                 cp.parse(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("[expressioin の後ろは ] です"));
             }
         } 
     }
@@ -149,7 +149,7 @@ public class ParseStatementAssignTest {
                 cp.parse(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down the output you have decided on here"));
+                assertThat(e.getMessage(), containsString("変数の後には=が必要です"));
             }
         } 
     }

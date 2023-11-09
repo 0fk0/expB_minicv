@@ -6,7 +6,7 @@ import lang.*;
 import lang.c.*;
 
 public class Ident extends CParseRule {
-	// number ::= NUM
+	// ident ::= IDENT
 	CToken ident;
 
 	public Ident(CParseContext pcx) {

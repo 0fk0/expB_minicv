@@ -55,7 +55,7 @@ public class StatementAssign extends CParseRule {
 				pcx.fatalError(assign.toExplainString() + "左辺の型[" + primary.getCType().toString() + "]と右辺の型[" + expression.getCType().toString() + "]が一致しません");
 			}
 			if (primary.isConstant()){
-				pcx.fatalError(assign.toExplainString() + "左辺が定数で、代入できません");
+				pcx.fatalError(assign.toExplainString() + "左辺が定数で代入できません");
 			}
 		}
 	}
