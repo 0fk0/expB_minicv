@@ -6,7 +6,7 @@ import lang.*;
 import lang.c.*;
 
 public class Program extends CParseRule {
-	// program ::= expression EOF
+	// program ::= { statement } EOF
 	CParseRule program;
 
 	public Program(CParseContext pcx) {
@@ -20,8 +20,18 @@ public class Program extends CParseRule {
 		// ここにやってくるときは、必ずisFirst()が満たされている
 		program = new Expression(pcx);
 		program.parse(pcx);
+
+		CParseRule statement = null, list = null;
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
+		while (Statement.isFirst(tk)) {
+			list = new Statement(pcx);
+			list.parse(pcx);
+			statement = list;
+			tk = ct.getCurrentToken(pcx);
+		}
+		program = statement;
+
 		if (tk.getType() != CToken.TK_EOF) {
 			pcx.fatalError(tk.toExplainString() + "プログラムの最後にゴミがあります");
 		}
