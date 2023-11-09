@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import lang.FatalErrorException;
@@ -52,7 +53,7 @@ public class ParseFactorTest {
     }
 
     // 実験5以降は Program が true ではなくなるのでこのメソッドに @Ignore をつけてください
-    @Test
+    @Test @Ignore
     public void parseRCURWithoutLCUR()  {
         String[] testDataArr = {"(1+3))"};
         for ( String testData: testDataArr ) {

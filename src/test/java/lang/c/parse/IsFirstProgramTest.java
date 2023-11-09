@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import lang.FatalErrorException;
@@ -51,7 +52,7 @@ public class IsFirstProgramTest {
     }
 
     
-    @Test
+    @Test @Ignore
     public void testProgram01() throws FatalErrorException {
         String[] testDataArr = {"13"};
         for ( String testData: testDataArr ) {
