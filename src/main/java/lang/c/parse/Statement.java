@@ -26,11 +26,11 @@ public class Statement extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		// if (statement != null) {
-		// 	statement.semanticCheck(pcx);
-		// 	setCType(statement.getCType());
-		// 	setConstant(statement.isConstant());
-		// }
+		if (statement != null) {
+			statement.semanticCheck(pcx);
+			setCType(statement.getCType());
+			setConstant(statement.isConstant());
+		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {

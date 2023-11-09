@@ -47,30 +47,17 @@ public class StatementAssign extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-	// 	if (ident != null){
-	// 		ident.semanticCheck(pcx);
-	// 		if ((ident.getCType().getType() == CType.T_int || ident.getCType().getType() == CType.T_pint) && array != null){
-	// 			pcx.fatalError("型[" + ident.getCType().toString() + "]の識別子の後にarrayは続きません");
-	// 		} else if ((ident.getCType().getType() == CType.T_int_array || ident.getCType().getType() == CType.T_pint_array) && array == null){
-	// 			pcx.fatalError("配列型[" + ident.getCType().toString() + "]の識別子の後にarrayが必要です");
-	// 		} else if (ident.getCType().getType() == CType.T_pint && array != null){
-	// 			pcx.fatalError("参照型の配列は許可されていません");
-	// 		}
+		if (primary != null && expression != null){
+			primary.semanticCheck(pcx);
+			expression.semanticCheck(pcx);
 
-	// 		if (array != null) {
-	// 			array.semanticCheck(pcx);
-	// 		}
-
-	// 		if (ident.getCType().getType() == CType.T_int_array){
-	// 			setCType(CType.getCType(CType.T_int));
-	// 		} else if (ident.getCType().getType() == CType.T_pint_array){
-	// 			setCType(CType.getCType(CType.T_pint));
-	// 		} else {
-	// 			setCType(ident.getCType());
-	// 		}
-			
-	// 		setConstant(ident.isConstant());
-	// 	}
+			if (primary.getCType() != expression.getCType()){
+				pcx.fatalError(assign.toExplainString() + "左辺の型[" + primary.getCType().toString() + "]と右辺の型[" + expression.getCType().toString() + "]が一致しません");
+			}
+			if (primary.isConstant()){
+				pcx.fatalError(assign.toExplainString() + "左辺が定数で、代入できません");
+			}
+		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
