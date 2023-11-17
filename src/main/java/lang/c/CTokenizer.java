@@ -254,7 +254,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else {
 						// 識別子の終わり
 						backChar(ch); // 英数字か_を表さない文字は戻す（読まなかったことにする
-						tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
+
+						// 識別子 と true/false の判定
+						if (text.toString().equals("true")) {
+							tk = new CToken(CToken.TK_TRUE, lineNo, startCol, "true");
+						} else if (text.toString().equals("false")) {
+							tk = new CToken(CToken.TK_FALSE, lineNo, startCol, "false");
+						} else {
+							tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
+						}
 						accept = true;
 					}
 					break;
