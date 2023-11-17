@@ -32,22 +32,22 @@ public class Condition extends CParseRule {
 
             switch (tk.getType()) {
                 case CToken.TK_LT:
-                    condition = new ConditionLT(pcx);
+                    condition = new ConditionLT(pcx, expression);
                     break;
                 case CToken.TK_LE:
-                    condition = new ConditionLE(pcx);
+                    condition = new ConditionLE(pcx, expression);
                     break;
                 case CToken.TK_GT:
-                    condition = new ConditionGT(pcx);
+                    condition = new ConditionGT(pcx, expression);
                     break;
                 case CToken.TK_GE:
-                    condition = new ConditionGE(pcx);
+                    condition = new ConditionGE(pcx, expression);
                     break;
                 case CToken.TK_EQ:
-                    condition = new ConditionEQ(pcx);
+                    condition = new ConditionEQ(pcx, expression);
                     break;
                 case CToken.TK_NE:
-                    condition = new ConditionNE(pcx);
+                    condition = new ConditionNE(pcx, expression);
                     break;
             }
             condition.parse(pcx);

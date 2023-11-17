@@ -8,10 +8,11 @@ import lang.c.CTokenizer;
 
 public class ConditionGE extends CParseRule {
     // ConditionGE ::= GE expression
-	CParseRule expression;
+	CParseRule expressionL, expressionR;
 	CToken op;
 
-	public ConditionGE(CParseContext pcx) {
+	public ConditionGE(CParseContext pcx, CParseRule expression) {
+		this.expressionL = expression;
 	}
 
 	public static boolean isFirst(CToken tk) {
@@ -25,8 +26,8 @@ public class ConditionGE extends CParseRule {
             op = tk;
             tk = ct.getNextToken(pcx);
 		} else if (Expression.isFirst(tk)) {
-            expression = new Expression(pcx);
-            expression.parse(pcx);
+            expressionR = new Expression(pcx);
+            expressionR.parse(pcx);
         }
 	}
 
