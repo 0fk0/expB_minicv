@@ -7,6 +7,7 @@ import lang.c.CParseContext;
 import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenizer;
+import lang.c.CType;
 
 public class Condition extends CParseRule {
     // Condition ::= TRUE | FALSE | expression ( conditionLT | conditionLE | conditionGT | conditionGE | conditionEQ | conditionNE )
@@ -33,53 +34,57 @@ public class Condition extends CParseRule {
             switch (tk.getType()) {
                 case CToken.TK_LT:
                     condition = new ConditionLT(pcx, expression);
+					condition.parse(pcx);
                     break;
                 case CToken.TK_LE:
                     condition = new ConditionLE(pcx, expression);
+					condition.parse(pcx);
                     break;
                 case CToken.TK_GT:
                     condition = new ConditionGT(pcx, expression);
+					condition.parse(pcx);
                     break;
                 case CToken.TK_GE:
                     condition = new ConditionGE(pcx, expression);
+					condition.parse(pcx);
                     break;
                 case CToken.TK_EQ:
                     condition = new ConditionEQ(pcx, expression);
+					condition.parse(pcx);
                     break;
                 case CToken.TK_NE:
                     condition = new ConditionNE(pcx, expression);
+					condition.parse(pcx);
                     break;
             }
-            condition.parse(pcx);
 
         }
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		// if (primary != null && expression != null){
-		// 	primary.semanticCheck(pcx);
-		// 	expression.semanticCheck(pcx);
-
-		// 	if (primary.getCType() != expression.getCType()){
-		// 		pcx.fatalError(assign.toExplainString() + "左辺の型[" + primary.getCType().toString() + "]と右辺の型[" + expression.getCType().toString() + "]が一致しません");
-		// 	}
-		// 	if (primary.isConstant()){
-		// 		pcx.fatalError(assign.toExplainString() + "左辺が定数で代入できません");
-		// 	}
-		// }
+		if (bool == null){
+			if (expression != null){
+				expression.semanticCheck(pcx);
+			}
+			if (condition != null){
+				condition.semanticCheck(pcx);
+			}
+		} else {
+			this.setCType(CType.getCType(CType.T_bool));
+			this.setConstant(true);
+		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		// PrintStream o = pcx.getIOContext().getOutStream();
-		// o.println(";;; statementAssign starts");
-		// if (primary != null && expression != null) {
-		// 	primary.codeGen(pcx);
-		// 	expression.codeGen(pcx);
+		PrintStream o = pcx.getIOContext().getOutStream();
+		o.println(";;; Condition starts");
+		if (expression != null) {;
+			expression.codeGen(pcx);
 
-		// 	o.println("\tMOV\t-(R6), R0\t; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入");
-		// 	o.println("\tMOV\t-(R6), R1\t; statementAssign:");
-		// 	o.println("\tMOV\tR0, (R1)\t; statementAssign:");
-		// }
-		// o.println(";;; statementAssign completes");
+			if (condition != null) {
+				condition.codeGen(pcx);
+			}
+		}
+		o.println(";;; Condition completes");
 	}
 }

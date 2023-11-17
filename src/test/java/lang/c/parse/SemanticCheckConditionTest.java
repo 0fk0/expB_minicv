@@ -73,7 +73,7 @@ public class SemanticCheckConditionTest {
                 cp.semanticCheck(cpContext);
                 fail("FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down a part of error sentence you have decided on here"));
+                assertThat(e.getMessage(), containsString("左辺の型[int]と右辺の型[*int]が一致しません"));
             }
         } 
     }
@@ -94,7 +94,7 @@ public class SemanticCheckConditionTest {
                 cp.semanticCheck(cpContext);
                 fail("FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("Write down a part of error sentence you have decided on here"));
+                assertThat(e.getMessage(), containsString("左辺の型[int]と右辺の型[*int]が一致しません"));
             }
         } 
     }

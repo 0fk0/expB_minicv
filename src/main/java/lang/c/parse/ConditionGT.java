@@ -1,10 +1,13 @@
 package lang.c.parse;
 
+import java.io.PrintStream;
+
 import lang.FatalErrorException;
 import lang.c.CParseContext;
 import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenizer;
+import lang.c.CType;
 
 public class ConditionGT extends CParseRule {
     // ConditionGT ::= GT expression
@@ -37,30 +40,34 @@ public class ConditionGT extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		// if (primary != null && expression != null){
-		// 	primary.semanticCheck(pcx);
-		// 	expression.semanticCheck(pcx);
+		if (expressionL != null && expressionR != null){
+			expressionL.semanticCheck(pcx);
+			expressionR.semanticCheck(pcx);
 
-		// 	if (primary.getCType() != expression.getCType()){
-		// 		pcx.fatalError(assign.toExplainString() + "左辺の型[" + primary.getCType().toString() + "]と右辺の型[" + expression.getCType().toString() + "]が一致しません");
-		// 	}
-		// 	if (primary.isConstant()){
-		// 		pcx.fatalError(assign.toExplainString() + "左辺が定数で代入できません");
-		// 	}
-		// }
+			if (expressionL.getCType().getType() == expressionR.getCType().getType()){
+				this.setCType(CType.getCType(CType.T_bool));
+				this.setConstant(true);
+			} else {
+				pcx.fatalError(op.toExplainString() + "左辺の型[" + expressionL.getCType().toString() + "]と右辺の型[" + expressionR.getCType().toString() + "]が一致しません");
+			}
+		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
-		// PrintStream o = pcx.getIOContext().getOutStream();
-		// o.println(";;; statementAssign starts");
-		// if (primary != null && expression != null) {
-		// 	primary.codeGen(pcx);
-		// 	expression.codeGen(pcx);
-
-		// 	o.println("\tMOV\t-(R6), R0\t; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入");
-		// 	o.println("\tMOV\t-(R6), R1\t; statementAssign:");
-		// 	o.println("\tMOV\tR0, (R1)\t; statementAssign:");
-		// }
-		// o.println(";;; statementAssign completes");
+		PrintStream o = pcx.getIOContext().getOutStream();
+		o.println(";;; condition > (compare) starts");
+		if (expressionL != null && expressionR != null) {
+			expressionL.codeGen(pcx);
+			expressionR.codeGen(pcx);
+			int seq = pcx.getSeqId();
+			o.println("\tMOV\t-(R6), R0\t; ConditionGT: ２数を取り出して、比べる");
+			o.println("\tMOV\t-(R6), R1\t; ConditionGT:");
+			o.println("\tMOV\t#0x0001, R2\t; ConditionGT: set true");
+			o.println("\tCMP\tR1, R0\t; ConditionGT: R1>R0 = R0-R1>0");
+			o.println("\tBRN\tGT" + seq + "\t; ConditionGT");
+			o.println("\tCLR\tR2\t\t; ConditionGT: set false");
+			o.println("GT" + seq + ":\tMOV\tR2, (R6)+\t; ConditionGT:");
+		}
+		o.println(";;;condition > (compare) completes");
 	}
 }
