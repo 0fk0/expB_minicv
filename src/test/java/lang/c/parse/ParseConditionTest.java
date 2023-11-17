@@ -64,7 +64,7 @@ public class ParseConditionTest {
         try {
             rule.parse(cpContext);
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("Write down the Error you have decided on here"));
+            assertThat(e.getMessage(), containsString("比較演算子がありません"));
         }
     }
     
@@ -79,7 +79,7 @@ public class ParseConditionTest {
         try {
             rule.parse(cpContext);
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("Write down the Error you have decided on here"));
+            assertThat(e.getMessage(), containsString("比較演算子がありません"));
         }
     }
 }

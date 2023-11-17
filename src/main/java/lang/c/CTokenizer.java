@@ -328,12 +328,14 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					ch = readChar();
 					if (ch == '=') {
 						tk = new CToken(CToken.TK_NE, lineNo, startCol, "!=");
+						accept = true;
+						break;
 					} else {
 						backChar(ch);
+						text.append('!');
 						state = OTHER_STATE;
+						continue;
 					}
-					accept = true;
-					break;
 				case SEMI_STATE:   	// ;を読んだ
 					tk = new CToken(CToken.TK_SEMI, lineNo, startCol, ";");
 					accept = true;

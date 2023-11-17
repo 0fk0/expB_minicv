@@ -31,6 +31,7 @@ public class Condition extends CParseRule {
             expression = new Expression(pcx);
             expression.parse(pcx);
 
+			tk = ct.getCurrentToken(pcx);
             switch (tk.getType()) {
                 case CToken.TK_LT:
                     condition = new ConditionLT(pcx, expression);
@@ -56,6 +57,8 @@ public class Condition extends CParseRule {
                     condition = new ConditionNE(pcx, expression);
 					condition.parse(pcx);
                     break;
+				default:
+					pcx.fatalError(tk.toExplainString() + "比較演算子がありません");
             }
 
         }
@@ -63,10 +66,8 @@ public class Condition extends CParseRule {
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (bool == null){
-			if (expression != null){
+			if (expression != null && condition != null){
 				expression.semanticCheck(pcx);
-			}
-			if (condition != null){
 				condition.semanticCheck(pcx);
 			}
 		} else {
@@ -78,12 +79,17 @@ public class Condition extends CParseRule {
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; Condition starts");
-		if (expression != null) {;
-			expression.codeGen(pcx);
-
-			if (condition != null) {
+		if (bool == null){
+			if (expression != null && condition != null){
 				condition.codeGen(pcx);
 			}
+		} else {
+			if (bool.getType() == CToken.TK_TRUE){
+				o.println("\tMOV\t#0x0001, (R6)+\t; Condition: true");
+			} else {
+				o.println("\tMOV\t#0x0000, (R6)+\t; Condition: false");
+			}
+			o.println("\tMOV\tR2, (R6)+\t; Condition: true/false");
 		}
 		o.println(";;; Condition completes");
 	}
