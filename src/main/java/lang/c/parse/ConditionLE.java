@@ -23,12 +23,17 @@ public class ConditionLE extends CParseRule {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
 		if (tk.getType() == CToken.TK_LE) {
-            op = tk;
-            tk = ct.getNextToken(pcx);
-		} else if (Expression.isFirst(tk)) {
+			op = tk;
+		}
+
+		tk = ct.getNextToken(pcx);
+
+		if (Expression.isFirst(tk)) {
             expressionR = new Expression(pcx);
             expressionR.parse(pcx);
-        }
+        } else {
+			pcx.fatalError(tk.toExplainString() + "LEの後ろはexpressionです");
+		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
