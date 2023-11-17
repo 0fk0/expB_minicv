@@ -17,7 +17,6 @@ import lang.c.CParseContext;
 import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
-import lang.c.parse.condition.Condition;
 
 /**
  * Before Testing Semantic Check by using this testing class, All ParseTest must be passed.

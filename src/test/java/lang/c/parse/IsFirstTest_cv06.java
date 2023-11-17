@@ -14,7 +14,6 @@ import lang.c.CParseContext;
 import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
-import lang.c.parse.condition.Condition;
 
 public class IsFirstTest_cv06 {
     // Test that each class's isFirst() is valid
