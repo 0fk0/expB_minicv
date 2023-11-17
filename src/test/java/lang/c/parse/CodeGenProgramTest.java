@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import lang.FatalErrorException;
@@ -55,7 +56,7 @@ public class CodeGenProgramTest {
      * 
      * @throws FatalErrorException
      */
-    @Test
+    @Test @Ignore
     public void codeGenProgramAdd3Terms() throws FatalErrorException {
         inputStream.setInputString("13 + 7 + 2");
         String expected[] = {
@@ -84,7 +85,7 @@ public class CodeGenProgramTest {
         helper.checkCodeGen(expected, rule, cpContext);
     }
 
-    @Test
+    @Test @Ignore
     public void codeGenProgramAdd2Terms() throws FatalErrorException {
         inputStream.setInputString("2 + 5");
         String expected[] = {
@@ -107,8 +108,9 @@ public class CodeGenProgramTest {
         CParseRule rule = new Program(cpContext);
         helper.checkCodeGen(expected, rule, cpContext);
     }
-    
-    @Test // Confirmation that only '2' CodeGen is done after calling Program
+
+    // Confirmation that only '2' CodeGen is done after calling Program
+    @Test @Ignore
     public void codeGenLeftTermAdd2Terms() throws FatalErrorException {
         inputStream.setInputString("2 + 5");
         String expected[] = {

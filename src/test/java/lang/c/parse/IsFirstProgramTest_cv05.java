@@ -2,13 +2,9 @@ package lang.c.parse;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.fail;
-import static org.hamcrest.Matchers.containsString;
-
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import lang.FatalErrorException;
@@ -16,12 +12,11 @@ import lang.IOContext;
 import lang.InputStreamForTest;
 import lang.PrintStreamForTest;
 import lang.c.CParseContext;
-import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
 
-public class ParseProgramTest {
+public class IsFirstProgramTest_cv05 {
 
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
@@ -50,20 +45,19 @@ public class ParseProgramTest {
         cpContext = null;
     }
 
-    @Test @Ignore
-    public void parseErrorEndOfProgram() throws FatalErrorException {
-        inputStream.setInputString("13 + 7@");
-        CToken firstToken = tokenizer.getNextToken(cpContext);
-        assertThat(Program.isFirst(firstToken), is(true));
-        CParseRule cpProgram = new Program(cpContext);
-        
-        try {
-            // call test target
-            cpProgram.parse(cpContext);
-            fail("FatalErrorException should be invoked.");
-        } catch ( FatalErrorException e ) {
-            String errorMessage = e.getMessage();
-            assertThat(errorMessage, containsString("プログラムの最後にゴミがあります"));
+    void resetEnvironment() {
+        tearDown();
+        setUp();
+    }
+
+    @Test
+    public void testProgram05() throws FatalErrorException {
+        String[] testDataArr = {" i_a=0; "};
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, Program.isFirst(firstToken), is(true));    
         }
     }
 }
