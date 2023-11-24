@@ -62,10 +62,10 @@ public class ConditionNE extends CParseRule {
 			int seq = pcx.getSeqId();
 			o.println("\tMOV\t-(R6), R0\t; ConditionNE: ２数を取り出して、比べる");
 			o.println("\tMOV\t-(R6), R1\t; ConditionNE:");
-			o.println("\tMOV\t#0x0001, R2\t; ConditionNE: set true");
+			o.println("\tMOV\t#0x0000, R2\t; ConditionNE: set false");
 			o.println("\tCMP\tR0, R1\t; ConditionNE: R1!=R0 = R1-R0!=0");
-			o.println("\tBNZ\tNE" + seq + "\t; ConditionNE");
-			o.println("\tCLR\tR2\t\t; ConditionNE: set false");
+			o.println("\tBRZ\tNE" + seq + "\t; ConditionNE");
+			o.println("\tMOV\t#0x0001, R2\t; ConditionNE: set true");
 			o.println("NE" + seq + ":\tMOV\tR2, (R6)+\t; ConditionNE:");
 		}
 		o.println(";;;condition != (compare) completes");

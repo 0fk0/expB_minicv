@@ -50,8 +50,7 @@ public class CodeGenConditionTest {
     public void conditionTRUE() throws FatalErrorException {
         inputStream.setInputString("true");
         String expected[] = {
-            "   MOV #0x0001, (R6)+; Condition: true",
-            "   MOV R2, (R6)+; Condition: true/false"
+            "   MOV #0x0001, (R6)+; Condition: true"
         };
 
         // Check only code portion, not validate comments
@@ -63,8 +62,7 @@ public class CodeGenConditionTest {
     public void conditionFALSE() throws FatalErrorException {
         inputStream.setInputString("false");
         String expected[] = {
-            "   MOV #0x0000, (R6)+; Condition: false",
-            "   MOV R2, (R6)+; Condition: true/false"
+            "   MOV #0x0000, (R6)+; Condition: false"
         };
 
         // Check only code portion, not validate comments
@@ -183,11 +181,57 @@ public class CodeGenConditionTest {
             "   MOV #2, (R6)+   ;",
             "   MOV -(R6), R0   ; ConditionNE: ２数を取り出して、比べる",
 			"   MOV -(R6), R1   ; ConditionNE:",
-			"   MOV #0x0001, R2 ; ConditionNE: set true",
+			"   MOV #0x0000, R2 ; ConditionNE: set false",
 			"   CMP R0, R1      ; ConditionNE: R1!=R0 = R1-R0!=0",
-			"   BNZ NE1         ; ConditionNE",
-			"   CLR R2          ; ConditionNE: set false",
+			"   BRZ NE1         ; ConditionNE",
+			"   MOV #0x0001, R2 ; ConditionNE: set true",
 			"NE1:MOV R2, (R6)+  ; ConditionNE:"
+        };
+
+        // Check only code portion, not validate comments
+        CParseRule rule = new Condition(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
+
+    @Test
+    public void conditionLT2() throws FatalErrorException {
+        inputStream.setInputString("i_a < 3");
+        String expected[] = {
+            "   MOV #i_a, (R6)+   ;",
+            "   MOV -(R6), R0     ; AddressToValue",
+            "   MOV (R0), (R6)+   ; AddressToValue",
+            "   MOV #3, (R6)+   ;",
+            "   MOV -(R6), R0   ; ConditionLT: ２数を取り出して、比べる",
+			"   MOV -(R6), R1   ; ConditionLT:",
+			"   MOV #0x0001, R2 ; ConditionLT: set true",
+			"   CMP R0, R1      ; ConditionLT: R1<R0 = R1-R0<0",
+			"   BRN LT1          ; ConditionLT",
+			"   CLR R2          ; ConditionLT: set false",
+			"LT1:MOV R2, (R6)+   ; ConditionLT:"
+        };
+
+        // Check only code portion, not validate comments
+        CParseRule rule = new Condition(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
+
+    @Test
+    public void conditionGT2() throws FatalErrorException {
+        inputStream.setInputString("10 > *ip_a");
+        String expected[] = {
+            "   MOV #10, (R6)+      ;",
+            "   MOV #ip_a, (R6)+    ;",
+            "   MOV -(R6), R0       ; PrimaryMult",
+            "   MOV (R0), (R6)+     ; PrimaryMult",
+            "   MOV -(R6), R0       ; AddressToValue",
+            "   MOV (R0), (R6)+     ; AddressToValue",
+            "   MOV -(R6), R0       ; ConditionGT: ２数を取り出して、比べる",
+			"   MOV -(R6), R1       ; ConditionGT:",
+			"   MOV #0x0001, R2     ; ConditionGT: set true",
+			"   CMP R1, R0          ; ConditionGT: R1>R0 = R0-R1>0",
+			"   BRN GT1             ; ConditionGT",
+			"   CLR R2              ; ConditionGT: set false",
+			"GT1: MOV R2, (R6)+     ; ConditionGT:"
         };
 
         // Check only code portion, not validate comments

@@ -89,7 +89,6 @@ public class Condition extends CParseRule {
 			} else {
 				o.println("\tMOV\t#0x0000, (R6)+\t; Condition: false");
 			}
-			o.println("\tMOV\tR2, (R6)+\t; Condition: true/false");
 		}
 		o.println(";;; Condition completes");
 	}
