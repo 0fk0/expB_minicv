@@ -36,6 +36,9 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 	private final int RBRA_STATE = 19;
 	private final int ASSIGN_STATE = 20;
 	private final int SEMI_STATE = 21;
+	private final int LESS_STATE = 22;
+	private final int GREAT_STATE = 23;
+	private final int NOT_STATE = 24;
 
 
 
@@ -156,6 +159,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else if (ch == '='){ //  等号
 						startCol = colNo - 1;
 						state = ASSIGN_STATE;
+					} else if (ch == '<'){ //  小なり
+						startCol = colNo - 1;
+						state = LESS_STATE;
+					} else if (ch == '>'){ //  大なり
+						startCol = colNo - 1;
+						state = GREAT_STATE;
+					} else if (ch == '!'){ //  エクスクラメーションマーク
+						startCol = colNo - 1;
+						state = NOT_STATE;
 					} else if (ch == ';'){ //  セミコロン
 						startCol = colNo - 1;
 						state = SEMI_STATE;
@@ -254,7 +266,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else {
 						// 識別子の終わり
 						backChar(ch); // 英数字か_を表さない文字は戻す（読まなかったことにする
-						tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
+
+						// 識別子 と true/false の判定
+						if (text.toString().equals("true")) {
+							tk = new CToken(CToken.TK_TRUE, lineNo, startCol, "true");
+						} else if (text.toString().equals("false")) {
+							tk = new CToken(CToken.TK_FALSE, lineNo, startCol, "false");
+						} else {
+							tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
+						}
 						accept = true;
 					}
 					break;
@@ -275,9 +295,47 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					accept = true;
 					break;
 				case ASSIGN_STATE: 	// =を読んだ
-					tk = new CToken(CToken.TK_ASSIGN, lineNo, startCol, "=");
+					ch = readChar();
+					if (ch == '=') {
+						tk = new CToken(CToken.TK_EQ, lineNo, startCol, "==");
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_ASSIGN, lineNo, startCol, "=");
+					}
 					accept = true;
 					break;
+				case LESS_STATE: 	// <を読んだ
+					ch = readChar();
+					if (ch == '=') {
+						tk = new CToken(CToken.TK_LE, lineNo, startCol, "<=");
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_LT, lineNo, startCol, "<");
+					}
+					accept = true;
+					break;
+				case GREAT_STATE: 	// >を読んだ
+					ch = readChar();
+					if (ch == '=') {
+						tk = new CToken(CToken.TK_GE, lineNo, startCol, ">=");
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_GT, lineNo, startCol, ">");
+					}
+					accept = true;
+					break;
+				case NOT_STATE: 	// !を読んだ
+					ch = readChar();
+					if (ch == '=') {
+						tk = new CToken(CToken.TK_NE, lineNo, startCol, "!=");
+						accept = true;
+						break;
+					} else {
+						backChar(ch);
+						text.append('!');
+						state = OTHER_STATE;
+						continue;
+					}
 				case SEMI_STATE:   	// ;を読んだ
 					tk = new CToken(CToken.TK_SEMI, lineNo, startCol, ";");
 					accept = true;

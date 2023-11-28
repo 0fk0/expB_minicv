@@ -7,5 +7,7 @@ public class CTokenRule extends HashMap<String, Object> {
 
 	public CTokenRule() {
 		// put("int",	new Integer(CToken.TK_INT));
+		put("true", CToken.TK_TRUE);
+		put("false", CToken.TK_FALSE);
 	}
 }
