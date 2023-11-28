@@ -238,4 +238,31 @@ public class CodeGenConditionTest {
         CParseRule rule = new Condition(cpContext);
         helper.checkCodeGen(expected, rule, cpContext);
     }
+
+    @Test
+    public void conditionEQ2() throws FatalErrorException {
+        inputStream.setInputString("ia_a[1] == 4");
+        String expected[] = {
+            "   MOV #ia_a, (R6)+   ;",
+            "   MOV #1, (R6)+      ;",
+            "   MOV -(R6), R0      ;",
+            "   MOV -(R6), R1      ;",
+            "   ADD R0, R1         ;",
+            "   MOV R1, (R6)+      ;",
+            "   MOV -(R6), R0      ;",
+            "   MOV (R0), (R6)+    ;",
+            "   MOV #4, (R6)+      ;",
+            "   MOV -(R6), R0      ; ConditionEQ: ２数を取り出して、比べる",
+			"   MOV -(R6), R1      ; ConditionEQ:",
+			"   MOV #0x0001, R2    ; ConditionEQ: set true",
+			"   CMP R0, R1         ; ConditionEQ: R1-R0 = R1-R0=0",
+			"   BRZ EQ1            ; ConditionEQ",
+			"   CLR R2             ; ConditionEQ: set false",
+			"EQ1:MOV R2, (R6)+     ; ConditionEQ:"
+        };
+
+        // Check only code portion, not validate comments
+        CParseRule rule = new Condition(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
 }
