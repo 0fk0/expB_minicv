@@ -6,8 +6,8 @@ import lang.*;
 import lang.c.*;
 
 public class StatementInput extends CParseRule {
-	// statementInput ::= INPUT num
-	CParseRule number;
+	// statementInput ::= INPUT variable
+	CParseRule variable;
 	CToken input;
 
 	public StatementInput(CParseContext pcx) {
@@ -23,25 +23,25 @@ public class StatementInput extends CParseRule {
 		input = tk;
 
 		tk = ct.getNextToken(pcx);
-		if (Number.isFirst(tk)) {
-			number = new Number(pcx);
-			number.parse(pcx);
+		if (Variable.isFirst(tk)) {
+			variable = new Variable(pcx);
+			variable.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "INPUTの後ろにはnumberが必要です");
 		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (input != null && number != null){
-			number.semanticCheck(pcx);
+		if (input != null && variable != null){
+			variable.semanticCheck(pcx);
 		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; statementInput starts");
-		if (input != null && number != null) {
-			number.codeGen(pcx);
+		if (input != null && variable != null) {
+			variable.codeGen(pcx);
 
 			o.println("\tMOV\t-(R6), R0\t; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入");
 			o.println("\tMOV\t-(R6), R1\t; statementInput:");

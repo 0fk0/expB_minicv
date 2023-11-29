@@ -6,7 +6,7 @@ import lang.*;
 import lang.c.*;
 
 public class StatementOutput extends CParseRule {
-	// statementInput ::= OUTPUT num
+	// statementInput ::= OUTPUT number
 	CParseRule number;
 	CToken output;
 
