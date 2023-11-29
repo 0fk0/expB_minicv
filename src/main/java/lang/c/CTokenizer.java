@@ -286,6 +286,10 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 							tk = new CToken(CToken.TK_ELSE, lineNo, startCol, "else");
 						} else if (text.toString().equals("while")) {
 							tk = new CToken(CToken.TK_WHILE, lineNo, startCol, "while");
+						} else if (text.toString().equals("input")) {
+							tk = new CToken(CToken.TK_INPUT, lineNo, startCol, "input");
+						} else if (text.toString().equals("output")) {
+							tk = new CToken(CToken.TK_OUTPUT, lineNo, startCol, "output");
 						} else {
 							tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
 						}

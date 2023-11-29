@@ -6,14 +6,14 @@ import lang.*;
 import lang.c.*;
 
 public class Statement extends CParseRule {
-	// statement ::= statementAssign
+	// statement ::= statementAssign | statementIf | statementWhile | statementInput | statementOutput
 	CParseRule statement;
 
 	public Statement(CParseContext pcx) {
 	}
 
 	public static boolean isFirst(CToken tk) {
-		return (StatementAssign.isFirst(tk));
+		return (StatementAssign.isFirst(tk) || StatementIf.isFirst(tk) || StatementWhile.isFirst(tk) || StatementInput.isFirst(tk) || StatementOutput.isFirst(tk));
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -21,6 +21,18 @@ public class Statement extends CParseRule {
 		CToken tk = ct.getCurrentToken(pcx);
 		if (StatementAssign.isFirst(tk)){
 			statement = new StatementAssign(pcx);
+			statement.parse(pcx);
+		} else if (StatementIf.isFirst(tk)){
+			statement = new StatementIf(pcx);
+			statement.parse(pcx);
+		} else if (StatementWhile.isFirst(tk)){
+			statement = new StatementWhile(pcx);
+			statement.parse(pcx);
+		} else if (StatementInput.isFirst(tk)){
+			statement = new StatementInput(pcx);
+			statement.parse(pcx);
+		} else if (StatementOutput.isFirst(tk)){
+			statement = new StatementOutput(pcx);
 			statement.parse(pcx);
 		}
 	}
