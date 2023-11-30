@@ -59,9 +59,23 @@ public class StatementIf extends CParseRule {
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; statementIf starts");
+		int seq = pcx.getSeqId();
 		if (conditionBlock != null && statementBlock != null){
 			conditionBlock.codeGen(pcx);
+			o.println("\tMOV\t-(R6), R0\t; StatementIF:真理値を取り出す");
+			if (ELSE != null){
+				o.println("\tBRZ\tELSEIF"+ seq +"\t;");
+			} else {
+				o.println("\tBRZ\tENDIF"+ seq +"\t;");
+			}
 			statementBlock.codeGen(pcx);
+
+			if (ELSE != null){
+				o.println("ELSEIF" + seq + ":\t; StatementIF:");
+				ELSE.codeGen(pcx);
+			} else {
+				o.println("ENDIF" + seq + ":\t; StatementIF:");
+			}
 		}
 
 		if (ELSE != null){

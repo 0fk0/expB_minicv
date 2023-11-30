@@ -41,6 +41,7 @@ public class StatementOutput extends CParseRule {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; statementOutput starts");
 		if (output != null && number != null) {
+			o.println("\tMOV\t#0xFFE0, (R6)+\t; statementOutput: 入出力番地を左辺にセット");
 			number.codeGen(pcx);
 
 			o.println("\tMOV\t-(R6), R0\t; statementOutput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入");

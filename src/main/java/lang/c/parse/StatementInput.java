@@ -42,6 +42,7 @@ public class StatementInput extends CParseRule {
 		o.println(";;; statementInput starts");
 		if (input != null && variable != null) {
 			variable.codeGen(pcx);
+			o.println("\tMOV\t#0xFFE0, (R6)+\t; statementInput: 入出力番地を右辺にセット");
 
 			o.println("\tMOV\t-(R6), R0\t; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入");
 			o.println("\tMOV\t-(R6), R1\t; statementInput:");

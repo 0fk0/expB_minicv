@@ -27,7 +27,7 @@ public class StatementBlock extends CParseRule {
 
 		tk = ct.getNextToken(pcx);
 		if (Statement.isFirst(tk)){
-			statement = new Condition(pcx);
+			statement = new Statement(pcx);
 			statement.parse(pcx);
 
 			tk = ct.getCurrentToken(pcx);

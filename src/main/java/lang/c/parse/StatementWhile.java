@@ -49,13 +49,15 @@ public class StatementWhile extends CParseRule {
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; statementWhile starts");
+		int seq = pcx.getSeqId();
 		if (conditionBlock != null && statementBlock != null) {
+			o.println("WHILE" + seq + ":\t; StatementWhile:");
 			conditionBlock.codeGen(pcx);
+			o.println("\tMOV\t-(R6), R0\t; StatementWhile:真理値を取り出す");
+			o.println("\tBRZ\tENDWHILE"+ seq +"\t;");
 			statementBlock.codeGen(pcx);
-
-			o.println("\tMOV\t-(R6), R0\t; statementWhile: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入");
-			o.println("\tMOV\t-(R6), R1\t; statementWhile:");
-			o.println("\tMOV\tR0, (R1)\t; statementWhile:");
+			o.println("\tJMP\tWHILE"+ seq +"\t;");
+			o.println("ENDWHILE" + seq + ":\t; StatementWhile:");
 		}
 		o.println(";;; statementWhile completes");
 	}
