@@ -1,3 +1,1 @@
-while (true){
-    i_a = 1;
-}
+if (true) i_a=1;

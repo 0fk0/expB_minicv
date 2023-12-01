@@ -1,6 +1,7 @@
 package lang.c.parse;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 import lang.FatalErrorException;
 import lang.c.CParseContext;
@@ -12,6 +13,7 @@ public class StatementBlock extends CParseRule {
     // StatementBlock ::= LCUR statement RCUR
 	CParseRule statement;
 	CToken lcur, rcur;
+	ArrayList<CParseRule> statementList = new ArrayList<CParseRule>();
 
 	public StatementBlock(CParseContext pcx) {
 	}
@@ -26,35 +28,41 @@ public class StatementBlock extends CParseRule {
 		lcur = tk;
 
 		tk = ct.getNextToken(pcx);
-		if (Statement.isFirst(tk)){
+		CParseRule statement = null;
+		while (Statement.isFirst(tk)) {
 			statement = new Statement(pcx);
 			statement.parse(pcx);
-
+			statementList.add(statement);
 			tk = ct.getCurrentToken(pcx);
-			if (tk.getType() == CToken.TK_RCUR){
-				rcur = tk;
-				tk = ct.getNextToken(pcx);
-			} else {
-				pcx.fatalError(tk.toExplainString() + "文の後には}が必要です");
-			}
-		} else {
+		}
+		if (statementList.isEmpty()){
 			pcx.fatalError(tk.toExplainString() + "{の後には文が必要です");
+		}
+
+		tk = ct.getCurrentToken(pcx);
+		if (tk.getType() == CToken.TK_RCUR){
+			rcur = tk;
+			tk = ct.getNextToken(pcx);
+		} else {
+			pcx.fatalError(tk.toExplainString() + "文の後には}が必要です");
 		}
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (statement != null){
-			statement.semanticCheck(pcx);
-			setCType(statement.getCType());
-			setConstant(statement.isConstant());
+		if (!statementList.isEmpty()) {
+			for (CParseRule statement : statementList) {
+				statement.semanticCheck(pcx);
+			}
 		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; StatementBlock starts");
-		if (statement != null){
-			statement.codeGen(pcx);
+		if (!statementList.isEmpty()) {
+			for (CParseRule statement : statementList) {
+				statement.codeGen(pcx);
+			}
 		}
 		o.println(";;; StatementBlock completes");
 	}

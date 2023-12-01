@@ -6,8 +6,8 @@ import lang.*;
 import lang.c.*;
 
 public class StatementWhile extends CParseRule {
-	// statementWhile ::= WHILE ConditionBlcok StatementBlock
-	CParseRule conditionBlock, statementBlock;
+	// statementWhile ::= WHILE ConditionBlcok Statement
+	CParseRule conditionBlock, statement;
 	CToken WHILE;
 
 	public StatementWhile(CParseContext pcx) {
@@ -28,11 +28,11 @@ public class StatementWhile extends CParseRule {
 			conditionBlock.parse(pcx);
 
 			tk = ct.getCurrentToken(pcx);
-			if (StatementBlock.isFirst(tk)){
-				statementBlock = new StatementBlock(pcx);
-				statementBlock.parse(pcx);
+			if (Statement.isFirst(tk)){
+				statement = new Statement(pcx);
+				statement.parse(pcx);
 			} else {
-				pcx.fatalError(tk.toExplainString() + "while(条件式)の後には{文}が必要です");
+				pcx.fatalError(tk.toExplainString() + "while(条件式)の後にはstatementが必要です");
 			}
 		} else {
 			pcx.fatalError(tk.toExplainString() + "whileの後には(条件式)が必要です");
@@ -40,9 +40,9 @@ public class StatementWhile extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (conditionBlock != null && statementBlock != null){
+		if (conditionBlock != null && statement != null){
 			conditionBlock.semanticCheck(pcx);
-			statementBlock.semanticCheck(pcx);
+			statement.semanticCheck(pcx);
 		}
 	}
 
@@ -50,12 +50,12 @@ public class StatementWhile extends CParseRule {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; statementWhile starts");
 		int seq = pcx.getSeqId();
-		if (conditionBlock != null && statementBlock != null) {
+		if (conditionBlock != null && statement != null) {
 			o.println("WHILE" + seq + ":\t; StatementWhile:");
 			conditionBlock.codeGen(pcx);
 			o.println("\tMOV\t-(R6), R0\t; StatementWhile:真理値を取り出す");
 			o.println("\tBRZ\tENDWHILE"+ seq +"\t;");
-			statementBlock.codeGen(pcx);
+			statement.codeGen(pcx);
 			o.println("\tJMP\tWHILE"+ seq +"\t;");
 			o.println("ENDWHILE" + seq + ":\t; StatementWhile:");
 		}

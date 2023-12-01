@@ -6,14 +6,14 @@ import lang.*;
 import lang.c.*;
 
 public class Statement extends CParseRule {
-	// statement ::= statementAssign | statementIf | statementWhile | statementInput | statementOutput
+	// statement ::= statementAssign | statementIf | statementWhile | statementInput | statementOutput | statementBlock
 	CParseRule statement;
 
 	public Statement(CParseContext pcx) {
 	}
 
 	public static boolean isFirst(CToken tk) {
-		return (StatementAssign.isFirst(tk) || StatementIf.isFirst(tk) || StatementWhile.isFirst(tk) || StatementInput.isFirst(tk) || StatementOutput.isFirst(tk));
+		return (StatementAssign.isFirst(tk) || StatementIf.isFirst(tk) || StatementWhile.isFirst(tk) || StatementInput.isFirst(tk) || StatementOutput.isFirst(tk) || StatementBlock.isFirst(tk));
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -33,6 +33,9 @@ public class Statement extends CParseRule {
 			statement.parse(pcx);
 		} else if (StatementOutput.isFirst(tk)){
 			statement = new StatementOutput(pcx);
+			statement.parse(pcx);
+		} else if (StatementBlock.isFirst(tk)){
+			statement = new StatementBlock(pcx);
 			statement.parse(pcx);
 		}
 	}
