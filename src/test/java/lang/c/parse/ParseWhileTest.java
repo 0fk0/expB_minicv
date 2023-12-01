@@ -14,7 +14,6 @@ import lang.IOContext;
 import lang.InputStreamForTest;
 import lang.PrintStreamForTest;
 import lang.c.CParseContext;
-import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
