@@ -1,1 +1,1 @@
-if (true) i_a=1;
+if{else}endif;while(input)output;

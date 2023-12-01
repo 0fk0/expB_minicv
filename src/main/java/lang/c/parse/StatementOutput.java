@@ -6,7 +6,7 @@ import lang.*;
 import lang.c.*;
 
 public class StatementOutput extends CParseRule {
-	// statementInput ::= OUTPUT expression SEMI
+	// statementOutput ::= OUTPUT expression SEMI
 	CParseRule expression;
 	CToken output, semi;
 
@@ -27,7 +27,7 @@ public class StatementOutput extends CParseRule {
 			expression = new Expression(pcx);
 			expression.parse(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "OUTPUTの後ろにはnumberが必要です");
+			pcx.fatalError(tk.toExplainString() + "OUTPUTの後ろにはexpressionが必要です");
 		}
 
 		tk = ct.getCurrentToken(pcx);
@@ -36,6 +36,8 @@ public class StatementOutput extends CParseRule {
 		} else {
 			pcx.fatalError(tk.toExplainString() + "出力文の最後には;が必要です");
 		}
+
+		tk = ct.getNextToken(pcx);
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {

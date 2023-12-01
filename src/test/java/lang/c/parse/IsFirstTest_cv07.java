@@ -72,4 +72,15 @@ public class IsFirstTest_cv07 {
             assertThat(testData, StatementBlock.isFirst(firstToken), is(true));    
         }
     }
+
+    @Test
+    public void testConditionBlock() {
+        String[] testDataArr = { "( i_a==1 )", };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, ConditionBlock.isFirst(firstToken), is(true));    
+        }
+    }
 }

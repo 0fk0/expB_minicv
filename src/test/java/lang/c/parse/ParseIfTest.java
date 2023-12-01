@@ -95,7 +95,7 @@ public class ParseIfTest {
 
     @Test
     public void parseInvalid1() {
-        String[] testDataArr = {"if"};
+        String[] testDataArr = {"if i_a==1"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -114,7 +114,7 @@ public class ParseIfTest {
 
     @Test
     public void parseInvalid2() {
-        String[] testDataArr = {"if (true);"};
+        String[] testDataArr = {"if (true)"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);

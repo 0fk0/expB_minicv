@@ -76,17 +76,15 @@ public class StatementIf extends CParseRule {
 				o.println("\tBRZ\tENDIF"+ seq +"\t;");
 			}
 			statement1.codeGen(pcx);
+			o.println("\tJMP ENDIF" + seq + ":\t; StatementIF:");
 
 			if (ELSE != null && statement2 != null){
 				o.println("ELSEIF" + seq + ":\t; StatementIF:");
 				statement2.codeGen(pcx);
-			} else {
-				o.println("ENDIF" + seq + ":\t; StatementIF:");
+				o.println("\tJMP ENDIF" + seq + ":\t; StatementIF:");
 			}
-		}
 
-		if (ELSE != null){
-			statement2.codeGen(pcx);
+			o.println("ENDIF" + seq + ":\t; StatementIF:");
 		}
 		o.println(";;; statementIf completes");
 	}

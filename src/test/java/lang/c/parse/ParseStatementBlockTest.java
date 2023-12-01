@@ -18,7 +18,7 @@ import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
 
-public class ParseOutputTest {
+public class ParseStatementBlockTest {
 
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
@@ -54,13 +54,13 @@ public class ParseOutputTest {
 
     @Test
     public void parseValid() {
-        String[] testDataArr = {"output 1+3;", "output &ip_b;"};
+        String[] testDataArr = {"{ i_c = 1; i_d = 3; }"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, StatementOutput.isFirst(firstToken), is(true));
-            StatementOutput cp = new StatementOutput(cpContext);
+            assertThat("Failed with " + testData, StatementBlock.isFirst(firstToken), is(true));
+            StatementBlock cp = new StatementBlock(cpContext);
 
             try {
                 cp.parse(cpContext);
@@ -72,38 +72,38 @@ public class ParseOutputTest {
 
     @Test
     public void parseInvalid1() {
-        String[] testDataArr = {"output 3"};
+        String[] testDataArr = {"{"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, StatementOutput.isFirst(firstToken), is(true));
-            StatementOutput cp = new StatementOutput(cpContext);
+            assertThat("Failed with " + testData, StatementBlock.isFirst(firstToken), is(true));
+            StatementBlock cp = new StatementBlock(cpContext);
 
             try {
                 cp.parse(cpContext);
                 fail("Error should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("出力文の最後には;が必要です"));
+                assertThat(e.getMessage(), containsString("{の後には文が必要です"));
             }
         }
     }
 
     @Test
     public void parseInvalid2() {
-        String[] testDataArr = {"output;"};
+        String[] testDataArr = {"{ i_a = 1; ip_b = &i_a;"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, StatementOutput.isFirst(firstToken), is(true));
-            StatementOutput cp = new StatementOutput(cpContext);
+            assertThat("Failed with " + testData, StatementBlock.isFirst(firstToken), is(true));
+            StatementBlock cp = new StatementBlock(cpContext);
 
             try {
                 cp.parse(cpContext);
                 fail("Error should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("OUTPUTの後ろにはexpressionが必要です"));
+                assertThat(e.getMessage(), containsString("文の後には}が必要です"));
             }
         }
     }

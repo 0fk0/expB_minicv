@@ -24,7 +24,7 @@ public class StatementInput extends CParseRule {
 
 		tk = ct.getNextToken(pcx);
 		if (Primary.isFirst(tk)) {
-			primary = new Variable(pcx);
+			primary = new Primary(pcx);
 			primary.parse(pcx);
 		} else {
 			pcx.fatalError(tk.toExplainString() + "INPUTの後ろにはprimaryが必要です");
@@ -36,6 +36,7 @@ public class StatementInput extends CParseRule {
 		} else {
 			pcx.fatalError(tk.toExplainString() + "入力文の最後には;が必要です");
 		}
+		tk = ct.getNextToken(pcx);
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
