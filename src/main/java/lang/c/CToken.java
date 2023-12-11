@@ -92,6 +92,10 @@ public class CToken extends SimpleToken {
 			
 			put(TK_LCUR,"TK_LCUR");
 			put(TK_RCUR,"TK_RCUR");
+
+			put(TK_NT,"TK_NT");
+			put(TK_AND,"TK_AND");
+			put(TK_OR,"TK_OR");
 		}
 	};
 
