@@ -56,7 +56,7 @@ public class CodeGenInputTest {
                 MOV     #0xFFE0, (R6)+  ; statementInput: 入出力番地を右辺にセット
                 MOV     -(R6), R0       ; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementInput:
-                MOV     R0, (R1)        ; statementInput:
+                MOV     (R0), (R1)        ; statementInput:
                 HLT                     ; ProgramNode:
                 .END                    ; ProgramNode:        
         """;
@@ -84,7 +84,7 @@ public class CodeGenInputTest {
                 MOV     #0xFFE0, (R6)+  ; statementInput: 入出力番地を右辺にセット
                 MOV     -(R6), R0       ; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementInput:
-                MOV     R0, (R1)        ; statementInput:
+                MOV     (R0), (R1)        ; statementInput:
                 HLT                     ; ProgramNode:
                 .END                    ; ProgramNode:     
         """;
@@ -108,7 +108,7 @@ public class CodeGenInputTest {
                 MOV     #0xFFE0, (R6)+  ; statementInput: 入出力番地を右辺にセット
                 MOV     -(R6), R0       ; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementInput:
-                MOV     R0, (R1)        ; statementInput:
+                MOV     (R0), (R1)        ; statementInput:
                 HLT                     ; ProgramNode:
                 .END                    ; ProgramNode:   
         """;
@@ -137,7 +137,7 @@ public class CodeGenInputTest {
                 MOV     #0xFFE0, (R6)+  ; statementInput: 入出力番地を右辺にセット
                 MOV     -(R6), R0       ; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementInput:
-                MOV     R0, (R1)        ; statementInput:
+                MOV     (R0), (R1)        ; statementInput:
                 HLT                     ; ProgramNode:
                 .END                    ; ProgramNode:
         """;

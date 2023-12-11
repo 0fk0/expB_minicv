@@ -79,7 +79,7 @@ public class CodeGenWhileTest {
                 MOV     #0xFFE0, (R6)+  ; statementInput: 入出力番地を右辺にセット
                 MOV     -(R6), R0       ; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementInput:
-                MOV     R0, (R1)        ; statementInput:
+                MOV     (R0), (R1)        ; statementInput:
                 MOV     #i_b, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     #4, (R6)+       ; Number: 数を積む
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
@@ -121,7 +121,7 @@ public class CodeGenWhileTest {
                 MOV     #0xFFE0, (R6)+  ; statementInput: 入出力番地を右辺にセット
                 MOV     -(R6), R0       ; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementInput:
-                MOV     R0, (R1)        ; statementInput:
+                MOV     (R0), (R1)        ; statementInput:
         WHILE2: ; StatementWhile:
                 MOV     #0x0000, (R6)+  ; Condition: false
                 MOV     -(R6), R0       ; StatementWhile:真理値を取り出す
@@ -207,7 +207,7 @@ public class CodeGenWhileTest {
                 MOV     #0xFFE0, (R6)+  ; statementInput: 入出力番地を右辺にセット
                 MOV     -(R6), R0       ; statementInput: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementInput:
-                MOV     R0, (R1)        ; statementInput:
+                MOV     (R0), (R1)        ; statementInput:
                 JMP     WHILE3  ;
         ENDWHILE3:      ; StatementWhile:
                 JMP     WHILE2  ;
