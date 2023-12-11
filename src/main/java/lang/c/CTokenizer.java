@@ -34,11 +34,13 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 	private final int RPAR_STATE = 17;
 	private final int LBRA_STATE = 18;
 	private final int RBRA_STATE = 19;
-	private final int ASSIGN_STATE = 20;
-	private final int SEMI_STATE = 21;
-	private final int LESS_STATE = 22;
-	private final int GREAT_STATE = 23;
-	private final int NOT_STATE = 24;
+	private final int LCUR_STATE = 20;
+	private final int RCUR_STATE = 21;
+	private final int ASSIGN_STATE = 22;
+	private final int SEMI_STATE = 23;
+	private final int LESS_STATE = 24;
+	private final int GREAT_STATE = 25;
+	private final int NOT_STATE = 26;
 
 
 
@@ -156,6 +158,12 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else if (ch == ']'){ // ] 終了
 						startCol = colNo - 1;
 						state = RBRA_STATE;
+					} else if (ch == '{'){ // { 開始
+						startCol = colNo - 1;
+						state = LCUR_STATE;
+					} else if (ch == '}'){ // } 終了
+						startCol = colNo - 1;
+						state = RCUR_STATE;
 					} else if (ch == '='){ //  等号
 						startCol = colNo - 1;
 						state = ASSIGN_STATE;
@@ -272,6 +280,16 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 							tk = new CToken(CToken.TK_TRUE, lineNo, startCol, "true");
 						} else if (text.toString().equals("false")) {
 							tk = new CToken(CToken.TK_FALSE, lineNo, startCol, "false");
+						} else if (text.toString().equals("if")) {
+							tk = new CToken(CToken.TK_IF, lineNo, startCol, "if");
+						} else if (text.toString().equals("else")) {
+							tk = new CToken(CToken.TK_ELSE, lineNo, startCol, "else");
+						} else if (text.toString().equals("while")) {
+							tk = new CToken(CToken.TK_WHILE, lineNo, startCol, "while");
+						} else if (text.toString().equals("input")) {
+							tk = new CToken(CToken.TK_INPUT, lineNo, startCol, "input");
+						} else if (text.toString().equals("output")) {
+							tk = new CToken(CToken.TK_OUTPUT, lineNo, startCol, "output");
 						} else {
 							tk = new CToken(CToken.TK_IDENT, lineNo, startCol, text.toString());
 						}
@@ -292,6 +310,14 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					break;
 				case RBRA_STATE: 	// ]を読んだ
 					tk = new CToken(CToken.TK_RBRA, lineNo, startCol, "]");
+					accept = true;
+					break;
+				case LCUR_STATE: 	// {を読んだ
+					tk = new CToken(CToken.TK_LCUR, lineNo, startCol, "{");
+					accept = true;
+					break;
+				case RCUR_STATE: 	// }を読んだ
+					tk = new CToken(CToken.TK_RCUR, lineNo, startCol, "}");
 					accept = true;
 					break;
 				case ASSIGN_STATE: 	// =を読んだ
