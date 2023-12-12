@@ -54,7 +54,7 @@ public class ParseConditionBlockTest {
 
     @Test
     public void parseValid() {
-        String[] testDataArr = {"(false)"};
+        String[] testDataArr = {"(false)", "(i_a == 1 && i_b == 1)"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
