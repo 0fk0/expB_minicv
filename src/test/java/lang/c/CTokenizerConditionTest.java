@@ -145,7 +145,7 @@ public class CTokenizerConditionTest {
         String testString = "!<=";
         inputStream.setInputString(testString);
         CToken token1 = tokenizer.getNextToken(cpContext);
-        helper.checkToken("token 1", token1, CToken.TK_ILL, "!", 1, 1);
+        helper.checkToken("token 1", token1, CToken.TK_NT, "!", 1, 1);
         CToken token2 = tokenizer.getNextToken(cpContext);
         helper.checkToken("token 2", token2, CToken.TK_LE, "<=", 1, 2);
     }

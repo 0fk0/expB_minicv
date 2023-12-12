@@ -1,0 +1,108 @@
+package lang.c.parse;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import lang.IOContext;
+import lang.InputStreamForTest;
+import lang.PrintStreamForTest;
+import lang.c.CParseContext;
+import lang.c.CToken;
+import lang.c.CTokenRule;
+import lang.c.CTokenizer;
+
+public class IsFirstTest_cv08 {
+    // Test that each class's isFirst() is valid
+    // Distant future, you should add necessary test cases to each Test code.
+
+    InputStreamForTest inputStream;
+    PrintStreamForTest outputStream;
+    PrintStreamForTest errorOutputStream;
+    CTokenizer tokenizer;
+    IOContext context;
+    CParseContext cpContext;
+
+    @Before
+    public void setUp() {
+        inputStream = new InputStreamForTest();
+        outputStream = new PrintStreamForTest(System.out);
+        errorOutputStream = new PrintStreamForTest(System.err);
+        context = new IOContext(inputStream, outputStream, errorOutputStream);
+        tokenizer = new CTokenizer(new CTokenRule());
+        cpContext = new CParseContext(context, tokenizer);
+    }
+
+    @After
+    public void tearDown() {
+        inputStream = null;
+        outputStream = null;
+        errorOutputStream = null;
+        tokenizer = null;
+        context = null;
+        cpContext = null;
+    }
+
+    void resetEnvironment() {
+        tearDown();
+        setUp();
+    }
+
+    @Test
+    public void testConditionAll() {
+        String[] testDataArr = { "!true", "false" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, ConditionAll.isFirst(firstToken), is(true));    
+        }
+    }
+
+    @Test
+    public void testConditionNT() {
+        String[] testDataArr = { "!(i_a < 1)", };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, ConditionNT.isFirst(firstToken), is(true));    
+        }
+    }
+
+    @Test
+    public void testJudge() {
+        String[] testDataArr = { "(1 <= i_a) || (i_a < -1)", "(1 <= i_a) && !(i_a < -1)", "(1 <= i_a) || (i_a < -1) && (i_b < 10)" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, Judge.isFirst(firstToken), is(true));    
+        }
+    }
+
+    @Test
+    public void testJudgeAnd() {
+        String[] testDataArr = { "&& (i_a < -1)" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, JudgeAnd.isFirst(firstToken), is(true));    
+        }
+    }
+
+    @Test
+    public void testJudgeOr() {
+        String[] testDataArr = { "|| (i_a < -1)" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, JudgeOr.isFirst(firstToken), is(true));    
+        }
+    }
+}
