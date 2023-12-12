@@ -35,7 +35,7 @@ public class JudgeOr extends CParseRule {
             conditionR = new ConditionAll(pcx);
             conditionR.parse(pcx);
         } else {
-			pcx.fatalError(tk.toExplainString() + "ORの後ろはConditionAllです");
+			pcx.fatalError(tk.toExplainString() + "論理演算子の後ろはconditionAllです");
 		}
 	}
 

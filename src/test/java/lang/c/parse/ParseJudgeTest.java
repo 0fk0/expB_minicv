@@ -19,7 +19,7 @@ import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
 
-public class ParseConditionTest {
+public class ParseJudgeTest {
     
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
@@ -53,52 +53,37 @@ public class ParseConditionTest {
         setUp();
     }
 
-    // == の打ち間違い	
+    // !condition
     @Test
-    public void parseConditionComparisonOpTest1() throws FatalErrorException {
-        inputStream.setInputString("1 = 2");
+    public void parseConditionNTTest() throws FatalErrorException {
+        inputStream.setInputString("!");
         CToken firstToken = tokenizer.getNextToken(cpContext);
-        assertThat(Condition.isFirst(firstToken), is(true));
-        Condition ruleNumber = new Condition(cpContext);
+        assertThat(ConditionNT.isFirst(firstToken), is(true));
+        ConditionNT ruleNumber = new ConditionNT(cpContext);
         CParseRule rule = ruleNumber;
         try {
             rule.parse(cpContext);
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("比較演算子がありません"));
+            assertThat(e.getMessage(), containsString("NTの後ろはconditionAllです"));
         }
     }
-
+    
     @Test
-    public void parseConditionComparisonOpTest2()  {
-        String[] testDataArr = {"i_a ==", "i_a >=", "i_a >", "i_a <=", "i_a <", "i_a !="};
+    public void parseJudgeLogicalOpTest()  {
+        String[] testDataArr = {"i_a == 1 &&", "i_a == 1 ||"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, Condition.isFirst(firstToken), is(true));
-            Condition cp = new Condition(cpContext);
+            assertThat("Failed with " + testData, Judge.isFirst(firstToken), is(true));
+            Judge cp = new Judge(cpContext);
 
             try {
                 cp.parse(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("比較演算子の後ろはexpressionです"));
+                assertThat(e.getMessage(), containsString("論理演算子の後ろはconditionAllです"));
             }
-        }
-    }
-    
-    // 条件になってない
-    @Test
-    public void notHaveComparisonOperater() throws FatalErrorException {
-        inputStream.setInputString("2");
-        CToken firstToken = tokenizer.getNextToken(cpContext);
-        assertThat(Condition.isFirst(firstToken), is(true));
-        Condition ruleNumber = new Condition(cpContext);
-        CParseRule rule = ruleNumber;
-        try {
-            rule.parse(cpContext);
-        } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("比較演算子がありません"));
         }
     }
 }

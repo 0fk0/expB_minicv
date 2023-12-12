@@ -64,7 +64,7 @@ public class IsFirstTest_cv08 {
 
     @Test
     public void testConditionNT() {
-        String[] testDataArr = { "!(i_a < 1)", };
+        String[] testDataArr = { "! i_a < 1", };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -75,7 +75,7 @@ public class IsFirstTest_cv08 {
 
     @Test
     public void testJudge() {
-        String[] testDataArr = { "(1 <= i_a) || (i_a < -1)", "(1 <= i_a) && !(i_a < -1)", "(1 <= i_a) || (i_a < -1) && (i_b < 10)" };
+        String[] testDataArr = { "1 <= i_a || i_a < -1", "!1 <= i_a && i_a < -1" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -86,7 +86,7 @@ public class IsFirstTest_cv08 {
 
     @Test
     public void testJudgeAnd() {
-        String[] testDataArr = { "&& (i_a < -1)" };
+        String[] testDataArr = { "&& i_a < -1" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -97,7 +97,7 @@ public class IsFirstTest_cv08 {
 
     @Test
     public void testJudgeOr() {
-        String[] testDataArr = { "|| (i_a < -1)" };
+        String[] testDataArr = { "|| i_a < -1" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);

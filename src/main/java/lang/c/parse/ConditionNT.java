@@ -9,7 +9,7 @@ import lang.c.CToken;
 import lang.c.CTokenizer;
 
 public class ConditionNT extends CParseRule {
-    // ConditionNT ::= NT condition
+    // ConditionNT ::= NT conditionAll
 	CParseRule condition;
 	CToken op;
 
@@ -29,11 +29,11 @@ public class ConditionNT extends CParseRule {
 
 		tk = ct.getNextToken(pcx);
 
-		if (Condition.isFirst(tk)) {
-            condition = new Condition(pcx);
+		if (ConditionAll.isFirst(tk)) {
+            condition = new ConditionAll(pcx);
             condition.parse(pcx);
         } else {
-			pcx.fatalError(tk.toExplainString() + "NTの後ろはconditionです");
+			pcx.fatalError(tk.toExplainString() + "NTの後ろはconditionAllです");
 		}
 	}
 
