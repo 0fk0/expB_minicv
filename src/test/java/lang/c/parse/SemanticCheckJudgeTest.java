@@ -2,8 +2,6 @@ package lang.c.parse;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
