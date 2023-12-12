@@ -35,6 +35,8 @@ public class Judge extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (judge != null) {
 			judge.semanticCheck(pcx);
+			this.setCType(judge.getCType());
+			this.setConstant(judge.isConstant());
 		}
 	}
 

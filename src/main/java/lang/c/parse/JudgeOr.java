@@ -40,7 +40,7 @@ public class JudgeOr extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (conditionL != null && conditionR == null){
+		if (conditionL != null && conditionR != null){
 			conditionL.semanticCheck(pcx);
 			conditionR.semanticCheck(pcx);
 
@@ -48,6 +48,9 @@ public class JudgeOr extends CParseRule {
 				pcx.fatalError(op.toExplainString() + "左辺の型がboolではありません");
 			} else if (conditionR.getCType().getType() != CType.T_bool){
 				pcx.fatalError(op.toExplainString() + "右辺の型がboolではありません");
+			} else {
+				this.setCType(CType.getCType(CType.T_bool));
+				this.setConstant(conditionL.isConstant() && conditionR.isConstant());
 			}
 		}
 	}

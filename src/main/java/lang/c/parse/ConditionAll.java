@@ -7,6 +7,7 @@ import lang.c.CParseContext;
 import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenizer;
+import lang.c.CType;
 
 public class ConditionAll extends CParseRule {
     // ConditionAll ::= condition | conditionNT
@@ -34,6 +35,8 @@ public class ConditionAll extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (condition != null){
 			condition.semanticCheck(pcx);
+			this.setCType(condition.getCType());
+			this.setConstant(condition.isConstant());
 		}
 	}
 

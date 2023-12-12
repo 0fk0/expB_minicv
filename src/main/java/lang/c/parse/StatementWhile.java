@@ -49,8 +49,8 @@ public class StatementWhile extends CParseRule {
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; statementWhile starts");
-		int seq = pcx.getSeqId();
 		if (conditionBlock != null && statement != null) {
+			int seq = pcx.getSeqId();
 			o.println("WHILE" + seq + ":\t; StatementWhile:");
 			conditionBlock.codeGen(pcx);
 			o.println("\tMOV\t-(R6), R0\t; StatementWhile:真理値を取り出す");
