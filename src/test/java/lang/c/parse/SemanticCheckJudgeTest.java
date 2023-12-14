@@ -2,8 +2,6 @@ package lang.c.parse;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,9 +15,15 @@ import lang.c.CParseContext;
 import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
+import lang.c.CType;
 
-public class ParseStatementBlockTest {
-
+/**
+ * Before Testing Semantic Check by using this testing class, All ParseTest must be passed.
+ * Bacause this testing class uses parse method to create testing data.
+ */
+public class SemanticCheckJudgeTest {
+    // Test that Condition node's semanticCheck is valid.
+    
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
     PrintStreamForTest errorOutputStream;
@@ -52,40 +56,41 @@ public class ParseStatementBlockTest {
         setUp();
     }
 
+    // 正当のテストコード例(Judge)
     @Test
-    public void parseValid() {
-        String[] testDataArr = {"{ i_c = 1; i_d = 3; }"};
+    public void semanticCheckTrueExample() throws FatalErrorException {
+        String[] testDataArr = {"2 > i_a && i_a > 1 || i_b != 1"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, StatementBlock.isFirst(firstToken), is(true));
-            StatementBlock cp = new StatementBlock(cpContext);
+            assertThat("Failed with " + testData, Judge.isFirst(firstToken), is(true));
+            Judge cp = new Judge(cpContext);
 
-            try {
-                cp.parse(cpContext);
-            } catch ( FatalErrorException e ) {
-                fail("Failed with " + testData + ". Please modify this Testcase to pass.");
-            }
+            cp.parse(cpContext);
+            cp.semanticCheck(cpContext);
+            assertThat(cp.getCType(), is(CType.getCType(CType.T_bool)));
+            String errorOutput = errorOutputStream.getPrintBufferString();
+            assertThat(errorOutput, is(""));
         }
     }
 
+    // 正当のテストコード例(conditionAll)
     @Test
-    public void parseInvalid2() {
-        String[] testDataArr = {"{ i_a = 1; ip_b = &i_a;"};
+    public void semanticCheckTrueExample2() throws FatalErrorException {
+        String[] testDataArr = {"!i_a + 1 == 1"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, StatementBlock.isFirst(firstToken), is(true));
-            StatementBlock cp = new StatementBlock(cpContext);
+            assertThat("Failed with " + testData, ConditionAll.isFirst(firstToken), is(true));
+            ConditionAll cp = new ConditionAll(cpContext);
 
-            try {
-                cp.parse(cpContext);
-                fail("Error should be invoked");
-            } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("文の後には}が必要です"));
-            }
+            cp.parse(cpContext);
+            cp.semanticCheck(cpContext);
+            assertThat(cp.getCType(), is(CType.getCType(CType.T_bool)));
+            String errorOutput = errorOutputStream.getPrintBufferString();
+            assertThat(errorOutput, is(""));
         }
     }
 }

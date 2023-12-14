@@ -35,7 +35,7 @@ public class ConditionGT extends CParseRule {
             expressionR = new Expression(pcx);
             expressionR.parse(pcx);
         } else {
-			pcx.fatalError(tk.toExplainString() + "GTの後ろはexpressionです");
+			pcx.fatalError(tk.toExplainString() + "比較演算子の後ろはexpressionです");
 		}
 	}
 

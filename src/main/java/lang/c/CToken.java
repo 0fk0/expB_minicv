@@ -36,10 +36,13 @@ public class CToken extends SimpleToken {
 	public static final int TK_WHILE    = 24;	// while (ident 経由で識別する)
 	public static final int TK_INPUT    = 25;	// input (ident 経由で識別する)
 	public static final int TK_OUTPUT   = 26;	// output (ident 経由で識別する)
-
 	public static final int TK_LCUR		= 27;	// {
 	public static final int TK_RCUR		= 28;	// }
-
+	// add chapter8
+	public static final int TK_NT		= 29;	// !
+	public static final int TK_AND		= 30;	// &&
+	public static final int TK_OR		= 31;	// || 
+	
 
 
 	public static final String TRUE_NUM = "0x0001";
@@ -89,6 +92,10 @@ public class CToken extends SimpleToken {
 			
 			put(TK_LCUR,"TK_LCUR");
 			put(TK_RCUR,"TK_RCUR");
+
+			put(TK_NT,"TK_NT");
+			put(TK_AND,"TK_AND");
+			put(TK_OR,"TK_OR");
 		}
 	};
 

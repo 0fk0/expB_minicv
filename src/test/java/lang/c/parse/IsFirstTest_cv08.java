@@ -2,14 +2,11 @@ package lang.c.parse;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import lang.FatalErrorException;
 import lang.IOContext;
 import lang.InputStreamForTest;
 import lang.PrintStreamForTest;
@@ -18,7 +15,9 @@ import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
 
-public class ParseConditionBlockTest {
+public class IsFirstTest_cv08 {
+    // Test that each class's isFirst() is valid
+    // Distant future, you should add necessary test cases to each Test code.
 
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
@@ -53,58 +52,57 @@ public class ParseConditionBlockTest {
     }
 
     @Test
-    public void parseValid() {
-        String[] testDataArr = {"(false)", "(i_a == 1 && i_b == 1)"};
+    public void testConditionAll() {
+        String[] testDataArr = { "!true", "false" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, ConditionBlock.isFirst(firstToken), is(true));
-            ConditionBlock cp = new ConditionBlock(cpContext);
-
-            try {
-                cp.parse(cpContext);
-            } catch ( FatalErrorException e ) {
-                fail("Failed with " + testData + ". Please modify this Testcase to pass.");
-            }
+            assertThat(testData, ConditionAll.isFirst(firstToken), is(true));    
         }
     }
 
     @Test
-    public void parseInvalid1() {
-        String[] testDataArr = {"("};
+    public void testConditionNT() {
+        String[] testDataArr = { "! i_a < 1", };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, ConditionBlock.isFirst(firstToken), is(true));
-            ConditionBlock cp = new ConditionBlock(cpContext);
-
-            try {
-                cp.parse(cpContext);
-                fail("Error should be invoked");
-            } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("(の後には条件式/真理値が必要です"));
-            }
+            assertThat(testData, ConditionNT.isFirst(firstToken), is(true));    
         }
     }
 
     @Test
-    public void parseInvalid2() {
-        String[] testDataArr = {"(true"};
+    public void testJudge() {
+        String[] testDataArr = { "1 <= i_a || i_a < -1", "!1 <= i_a && i_a < -1" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, ConditionBlock.isFirst(firstToken), is(true));
-            ConditionBlock cp = new ConditionBlock(cpContext);
+            assertThat(testData, Judge.isFirst(firstToken), is(true));    
+        }
+    }
 
-            try {
-                cp.parse(cpContext);
-                fail("Error should be invoked");
-            } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("条件式/真理値の後には)が必要です"));
-            }
+    @Test
+    public void testJudgeAnd() {
+        String[] testDataArr = { "&& i_a < -1" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, JudgeAnd.isFirst(firstToken), is(true));    
+        }
+    }
+
+    @Test
+    public void testJudgeOr() {
+        String[] testDataArr = { "|| i_a < -1" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, JudgeOr.isFirst(firstToken), is(true));    
         }
     }
 }

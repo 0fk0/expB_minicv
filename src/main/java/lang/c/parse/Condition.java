@@ -69,6 +69,8 @@ public class Condition extends CParseRule {
 			if (expression != null && condition != null){
 				expression.semanticCheck(pcx);
 				condition.semanticCheck(pcx);
+				this.setCType(condition.getCType());
+				this.setConstant(condition.isConstant());
 			}
 		} else {
 			this.setCType(CType.getCType(CType.T_bool));

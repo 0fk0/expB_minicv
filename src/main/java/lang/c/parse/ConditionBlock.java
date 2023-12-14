@@ -9,8 +9,8 @@ import lang.c.CToken;
 import lang.c.CTokenizer;
 
 public class ConditionBlock extends CParseRule {
-    // ConditionBlock ::= LPAR condition RPAR
-	CParseRule condition;
+    // ConditionBlock ::= LPAR judge RPAR
+	CParseRule judge;
 	CToken lpar, rpar;
 
 	public ConditionBlock(CParseContext pcx) {
@@ -26,9 +26,9 @@ public class ConditionBlock extends CParseRule {
 		lpar = tk;
 
 		tk = ct.getNextToken(pcx);
-		if (Condition.isFirst(tk)){
-			condition = new Condition(pcx);
-			condition.parse(pcx);
+		if (Judge.isFirst(tk)){
+			judge = new Judge(pcx);
+			judge.parse(pcx);
 
 			tk = ct.getCurrentToken(pcx);
 			if (tk.getType() == CToken.TK_RPAR){
@@ -43,18 +43,18 @@ public class ConditionBlock extends CParseRule {
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
-		if (condition != null){
-			condition.semanticCheck(pcx);
-			setCType(condition.getCType());
-			setConstant(condition.isConstant());
+		if (judge != null){
+			judge.semanticCheck(pcx);
+			setCType(judge.getCType());
+			setConstant(judge.isConstant());
 		}
 	}
 
 	public void codeGen(CParseContext pcx) throws FatalErrorException {
 		PrintStream o = pcx.getIOContext().getOutStream();
 		o.println(";;; ConditionBlock starts");
-		if (condition != null){
-			condition.codeGen(pcx);
+		if (judge != null){
+			judge.codeGen(pcx);
 		}
 		o.println(";;; ConditionBlock completes");
 	}

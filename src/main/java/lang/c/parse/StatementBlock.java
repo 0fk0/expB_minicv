@@ -35,9 +35,6 @@ public class StatementBlock extends CParseRule {
 			statementList.add(statement);
 			tk = ct.getCurrentToken(pcx);
 		}
-		if (statementList.isEmpty()){
-			pcx.fatalError(tk.toExplainString() + "{の後には文が必要です");
-		}
 
 		tk = ct.getCurrentToken(pcx);
 		if (tk.getType() == CToken.TK_RCUR){

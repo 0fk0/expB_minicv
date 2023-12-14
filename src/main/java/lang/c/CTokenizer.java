@@ -41,6 +41,7 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 	private final int LESS_STATE = 24;
 	private final int GREAT_STATE = 25;
 	private final int NOT_STATE = 26;
+	private final int BAR_STATE = 27;
 
 
 
@@ -179,6 +180,9 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					} else if (ch == ';'){ //  セミコロン
 						startCol = colNo - 1;
 						state = SEMI_STATE;
+					} else if (ch == '|'){ //  縦線
+						startCol = colNo - 1;
+						state = BAR_STATE;
 					} else { // ヘンな文字を読んだ
 						startCol = colNo - 1;
 						text.append(ch);
@@ -358,9 +362,21 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 						break;
 					} else {
 						backChar(ch);
-						text.append('!');
-						state = OTHER_STATE;
-						continue;
+						tk = new CToken(CToken.TK_NT, lineNo, startCol, "!");
+						accept = true;
+						break;
+					}
+				case BAR_STATE: 	// |を読んだ
+					ch = readChar();
+					if (ch == '|') {
+						tk = new CToken(CToken.TK_OR, lineNo, startCol, "||");
+						accept = true;
+						break;
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_ILL, lineNo, startCol, "|");
+						accept = true;
+						break;
 					}
 				case SEMI_STATE:   	// ;を読んだ
 					tk = new CToken(CToken.TK_SEMI, lineNo, startCol, ";");
@@ -422,9 +438,17 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 					}
 					break;
 				case AND_STATE: // &を読んだ
-					tk = new CToken(CToken.TK_AMP, lineNo, startCol, "&");
-					accept = true;
-					break;
+					ch = readChar();
+					if (ch == '&') {
+						tk = new CToken(CToken.TK_AND, lineNo, startCol, "&&");
+						accept = true;
+						break;
+					} else {
+						backChar(ch);
+						tk = new CToken(CToken.TK_AMP, lineNo, startCol, "&");
+						accept = true;
+						break;
+					}
 			}
 		}
 		return tk;

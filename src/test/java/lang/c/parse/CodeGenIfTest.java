@@ -102,7 +102,6 @@ public class CodeGenIfTest {
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF1:     ; StatementIF:
         ENDIF1: ; StatementIF:
                 HLT                     ; ProgramNode:
                 .END                    ; ProgramNode:
@@ -137,18 +136,18 @@ public class CodeGenIfTest {
                 MOV     -(R6), R1       ; ConditionEQ:
                 MOV     #0x0001, R2     ; ConditionEQ: set true
                 CMP     R0, R1  ; ConditionEQ: R1-R0 = R1-R0=0
-                BRZ     EQ2     ; ConditionEQ
+                BRZ     EQ1     ; ConditionEQ
                 CLR     R2              ; ConditionEQ: set false
-        EQ2:    MOV     R2, (R6)+       ; ConditionEQ:
+        EQ1:    MOV     R2, (R6)+       ; ConditionEQ:
                 MOV     -(R6), R0       ; StatementIF:真理値を取り出す
-                BRZ     ELSEIF1 ;
+                BRZ     ELSEIF2 ;
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     #0, (R6)+       ; Number: 数を積む
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF1:     ; StatementIF:
-        ELSEIF1:        ; StatementIF:
+                JMP ENDIF2:     ; StatementIF:
+        ELSEIF2:        ; StatementIF:
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     -(R6), R0       ; addressToValue: アドレスを取り出して、内容を参照して、積む
                 MOV     (R0), (R6)+     ; addressToValue:
@@ -157,27 +156,25 @@ public class CodeGenIfTest {
                 MOV     -(R6), R1       ; ConditionEQ:
                 MOV     #0x0001, R2     ; ConditionEQ: set true
                 CMP     R0, R1  ; ConditionEQ: R1-R0 = R1-R0=0
-                BRZ     EQ4     ; ConditionEQ
+                BRZ     EQ3     ; ConditionEQ
                 CLR     R2              ; ConditionEQ: set false
-        EQ4:    MOV     R2, (R6)+       ; ConditionEQ:
+        EQ3:    MOV     R2, (R6)+       ; ConditionEQ:
                 MOV     -(R6), R0       ; StatementIF:真理値を取り出す
-                BRZ     ELSEIF3 ;
+                BRZ     ELSEIF4 ;
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     #1, (R6)+       ; Number: 数を積む
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF3:     ; StatementIF:
-        ELSEIF3:        ; StatementIF:
+                JMP ENDIF4:     ; StatementIF:
+        ELSEIF4:        ; StatementIF:
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     #2, (R6)+       ; Number: 数を積む
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF3:     ; StatementIF:
-        ENDIF3: ; StatementIF:
-                JMP ENDIF1:     ; StatementIF:
-        ENDIF1: ; StatementIF:
+        ENDIF4: ; StatementIF:
+        ENDIF2: ; StatementIF:
                 HLT                     ; ProgramNode:
                 .END                    ; ProgramNode:   
         """;
@@ -219,18 +216,18 @@ public class CodeGenIfTest {
                 MOV     -(R6), R1       ; ConditionEQ:
                 MOV     #0x0001, R2     ; ConditionEQ: set true
                 CMP     R0, R1  ; ConditionEQ: R1-R0 = R1-R0=0
-                BRZ     EQ2     ; ConditionEQ
+                BRZ     EQ1     ; ConditionEQ
                 CLR     R2              ; ConditionEQ: set false
-        EQ2:    MOV     R2, (R6)+       ; ConditionEQ:
+        EQ1:    MOV     R2, (R6)+       ; ConditionEQ:
                 MOV     -(R6), R0       ; StatementIF:真理値を取り出す
-                BRZ     ELSEIF1 ;
+                BRZ     ELSEIF2 ;
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     #0, (R6)+       ; Number: 数を積む
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF1:     ; StatementIF:
-        ELSEIF1:        ; StatementIF:
+                JMP ENDIF2:     ; StatementIF:
+        ELSEIF2:        ; StatementIF:
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     -(R6), R0       ; addressToValue: アドレスを取り出して、内容を参照して、積む
                 MOV     (R0), (R6)+     ; addressToValue:
@@ -239,18 +236,18 @@ public class CodeGenIfTest {
                 MOV     -(R6), R1       ; ConditionEQ:
                 MOV     #0x0001, R2     ; ConditionEQ: set true
                 CMP     R0, R1  ; ConditionEQ: R1-R0 = R1-R0=0
-                BRZ     EQ4     ; ConditionEQ
+                BRZ     EQ3     ; ConditionEQ
                 CLR     R2              ; ConditionEQ: set false
-        EQ4:    MOV     R2, (R6)+       ; ConditionEQ:
+        EQ3:    MOV     R2, (R6)+       ; ConditionEQ:
                 MOV     -(R6), R0       ; StatementIF:真理値を取り出す
-                BRZ     ELSEIF3 ;
+                BRZ     ELSEIF4 ;
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     #1, (R6)+       ; Number: 数を積む
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF3:     ; StatementIF:
-        ELSEIF3:        ; StatementIF:
+                JMP ENDIF4:     ; StatementIF:
+        ELSEIF4:        ; StatementIF:
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     -(R6), R0       ; addressToValue: アドレスを取り出して、内容を参照して、積む
                 MOV     (R0), (R6)+     ; addressToValue:
@@ -259,29 +256,26 @@ public class CodeGenIfTest {
                 MOV     -(R6), R1       ; ConditionEQ:
                 MOV     #0x0001, R2     ; ConditionEQ: set true
                 CMP     R0, R1  ; ConditionEQ: R1-R0 = R1-R0=0
-                BRZ     EQ6     ; ConditionEQ
+                BRZ     EQ5     ; ConditionEQ
                 CLR     R2              ; ConditionEQ: set false
-        EQ6:    MOV     R2, (R6)+       ; ConditionEQ:
+        EQ5:    MOV     R2, (R6)+       ; ConditionEQ:
                 MOV     -(R6), R0       ; StatementIF:真理値を取り出す
-                BRZ     ELSEIF5 ;
+                BRZ     ELSEIF6 ;
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     #2, (R6)+       ; Number: 数を積む
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF5:     ; StatementIF:
-        ELSEIF5:        ; StatementIF:
+                JMP ENDIF6:     ; StatementIF:
+        ELSEIF6:        ; StatementIF:
                 MOV     #i_a, (R6)+     ; Ident: 変数アドレスを積む
                 MOV     #3, (R6)+       ; Number: 数を積む
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF5:     ; StatementIF:
-        ENDIF5: ; StatementIF:
-                JMP ENDIF3:     ; StatementIF:
-        ENDIF3: ; StatementIF:
-                JMP ENDIF1:     ; StatementIF:
-        ENDIF1: ; StatementIF:
+        ENDIF6: ; StatementIF:
+        ENDIF4: ; StatementIF:
+        ENDIF2: ; StatementIF:
                 HLT                     ; ProgramNode:
                 .END                    ; ProgramNode:
         """;
@@ -317,7 +311,6 @@ public class CodeGenIfTest {
                 MOV     -(R6), R0       ; statementAssign: 左辺の変数アドレスと右辺の値を取り出して、右辺の値を左辺の変数アドレスに代入
                 MOV     -(R6), R1       ; statementAssign:
                 MOV     R0, (R1)        ; statementAssign:
-                JMP ENDIF1:     ; StatementIF:
         ENDIF1: ; StatementIF:
                 HLT                     ; ProgramNode:
                 .END                    ; ProgramNode:

@@ -14,12 +14,13 @@ import lang.IOContext;
 import lang.InputStreamForTest;
 import lang.PrintStreamForTest;
 import lang.c.CParseContext;
+import lang.c.CParseRule;
 import lang.c.CToken;
 import lang.c.CTokenRule;
 import lang.c.CTokenizer;
 
-public class ParseStatementBlockTest {
-
+public class ParseJudgeTest {
+    
     InputStreamForTest inputStream;
     PrintStreamForTest outputStream;
     PrintStreamForTest errorOutputStream;
@@ -52,39 +53,36 @@ public class ParseStatementBlockTest {
         setUp();
     }
 
+    // !condition
     @Test
-    public void parseValid() {
-        String[] testDataArr = {"{ i_c = 1; i_d = 3; }"};
-        for ( String testData: testDataArr ) {
-            resetEnvironment();
-            inputStream.setInputString(testData);
-            CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, StatementBlock.isFirst(firstToken), is(true));
-            StatementBlock cp = new StatementBlock(cpContext);
-
-            try {
-                cp.parse(cpContext);
-            } catch ( FatalErrorException e ) {
-                fail("Failed with " + testData + ". Please modify this Testcase to pass.");
-            }
+    public void parseConditionNTTest() throws FatalErrorException {
+        inputStream.setInputString("!");
+        CToken firstToken = tokenizer.getNextToken(cpContext);
+        assertThat(ConditionNT.isFirst(firstToken), is(true));
+        ConditionNT ruleNumber = new ConditionNT(cpContext);
+        CParseRule rule = ruleNumber;
+        try {
+            rule.parse(cpContext);
+        } catch ( FatalErrorException e ) {
+            assertThat(e.getMessage(), containsString("NTの後ろはconditionAllです"));
         }
     }
-
+    
     @Test
-    public void parseInvalid2() {
-        String[] testDataArr = {"{ i_a = 1; ip_b = &i_a;"};
+    public void parseJudgeLogicalOpTest()  {
+        String[] testDataArr = {"i_a == 1 &&", "i_a == 1 ||"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
-            assertThat("Failed with " + testData, StatementBlock.isFirst(firstToken), is(true));
-            StatementBlock cp = new StatementBlock(cpContext);
+            assertThat("Failed with " + testData, Judge.isFirst(firstToken), is(true));
+            Judge cp = new Judge(cpContext);
 
             try {
                 cp.parse(cpContext);
-                fail("Error should be invoked");
+                fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("文の後には}が必要です"));
+                assertThat(e.getMessage(), containsString("論理演算子の後ろはconditionAllです"));
             }
         }
     }
