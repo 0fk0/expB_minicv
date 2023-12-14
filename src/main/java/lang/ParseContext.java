@@ -70,4 +70,10 @@ public abstract class ParseContext {
 		message(s);
 		++warningNo;
 	}
+
+	// 回復可能エラー
+	public void recoverableError(final String s) throws RecoverableErrorException {
+		error(s);
+		throw new RecoverableErrorException(s);
+	}
 }
