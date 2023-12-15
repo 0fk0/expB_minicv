@@ -18,25 +18,28 @@ public class StatementInput extends CParseRule {
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
-		CTokenizer ct = pcx.getTokenizer();
-		CToken tk = ct.getCurrentToken(pcx);
-		input = tk;
+		try {
+			CTokenizer ct = pcx.getTokenizer();
+			CToken tk = ct.getCurrentToken(pcx);
+			input = tk;
 
-		tk = ct.getNextToken(pcx);
-		if (Primary.isFirst(tk)) {
-			primary = new Primary(pcx);
-			primary.parse(pcx);
-		} else {
-			pcx.fatalError(tk.toExplainString() + "INPUTの後ろにはprimaryが必要です");
-		}
+			tk = ct.getNextToken(pcx);
+			if (Primary.isFirst(tk)) {
+				primary = new Primary(pcx);
+				primary.parse(pcx);
+			} else {
+				pcx.recoverableError(tk.toExplainString() + "INPUTの後ろにはprimaryが必要です");
+			}
 
-		tk = ct.getCurrentToken(pcx);
-		if (tk.getType() == CToken.TK_SEMI) {
-			semi = tk;
-		} else {
-			pcx.fatalError(tk.toExplainString() + "入力文の最後には;が必要です");
+			tk = ct.getCurrentToken(pcx);
+			if (tk.getType() == CToken.TK_SEMI) {
+				semi = tk;
+			} else {
+				pcx.warning(tk.toExplainString()+  "入力文で最後の;を補完しました");
+			}
+			tk = ct.getNextToken(pcx);
+		} catch (RecoverableErrorException e){
 		}
-		tk = ct.getNextToken(pcx);
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
@@ -45,7 +48,7 @@ public class StatementInput extends CParseRule {
 		}
 
 		if (primary.isConstant()) {
-			pcx.fatalError("入力文の左辺が定数です");
+			pcx.warning("入力文の左辺が定数です");
 		}
 	}
 

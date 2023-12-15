@@ -99,6 +99,15 @@ public class CTokenizer extends Tokenizer<CToken, CParseContext> {
 		return currentTk;
 	}
 
+	// 指定トークンまで読み飛ばす
+	public CToken skipTo(CParseContext pctx, int type1, int type2) {
+		while (!(this.currentTk.getType() == type1 || this.currentTk.getType() == type2)) {
+			this.getNextToken(pctx);
+		}
+		
+		return currentTk;
+	}
+
 	private CToken readToken() {
 		CToken tk = null;
 		char ch;

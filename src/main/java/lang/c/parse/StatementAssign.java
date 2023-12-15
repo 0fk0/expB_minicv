@@ -18,32 +18,35 @@ public class StatementAssign extends CParseRule {
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
-		CTokenizer ct = pcx.getTokenizer();
-		CToken tk = ct.getCurrentToken(pcx);
-		if (Primary.isFirst(tk)){
-			primary = new Primary(pcx);
-			primary.parse(pcx);
+		try {
+			CTokenizer ct = pcx.getTokenizer();
+			CToken tk = ct.getCurrentToken(pcx);
+			if (Primary.isFirst(tk)){
+				primary = new Primary(pcx);
+				primary.parse(pcx);
+			}
+			tk = ct.getCurrentToken(pcx);
+			if (tk.getType() == CToken.TK_ASSIGN) {
+				assign = tk;
+			} else {
+				pcx.warning(tk.toExplainString()+  "代入分で変数の後の=を補完しました");
+			}
+			tk = ct.getNextToken(pcx);
+			if (Expression.isFirst(tk)) {
+				expression = new Expression(pcx);
+				expression.parse(pcx);
+			} else {
+				pcx.recoverableError(tk.toExplainString() + "=の後ろはexpressionです");
+			}
+			tk = ct.getCurrentToken(pcx);
+			if (tk.getType() == CToken.TK_SEMI) {
+				semi = tk;
+			} else {
+				pcx.warning(tk.toExplainString()+  "代入分で最後の;を補完しました");
+			}
+			tk = ct.getNextToken(pcx);
+		} catch (RecoverableErrorException e){
 		}
-		tk = ct.getCurrentToken(pcx);
-		if (tk.getType() == CToken.TK_ASSIGN) {
-			assign = tk;
-		} else {
-			pcx.fatalError(tk.toExplainString() + "変数の後には=が必要です");
-		}
-		tk = ct.getNextToken(pcx);
-		if (Expression.isFirst(tk)) {
-			expression = new Expression(pcx);
-			expression.parse(pcx);
-		} else {
-			pcx.fatalError(tk.toExplainString() + "=の後ろはexpressionです");
-		}
-		tk = ct.getCurrentToken(pcx);
-		if (tk.getType() == CToken.TK_SEMI) {
-			semi = tk;
-		} else {
-			pcx.fatalError(tk.toExplainString() + "代入文の最後には;が必要です");
-		}
-		tk = ct.getNextToken(pcx);
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
@@ -52,10 +55,10 @@ public class StatementAssign extends CParseRule {
 			expression.semanticCheck(pcx);
 
 			if (primary.getCType() != expression.getCType()){
-				pcx.fatalError(assign.toExplainString() + "左辺の型[" + primary.getCType().toString() + "]と右辺の型[" + expression.getCType().toString() + "]が一致しません");
+				pcx.warning(assign.toExplainString() + "左辺の型[" + primary.getCType().toString() + "]と右辺の型[" + expression.getCType().toString() + "]が一致しません");
 			}
 			if (primary.isConstant()){
-				pcx.fatalError(assign.toExplainString() + "左辺が定数で代入できません");
+				pcx.warning(assign.toExplainString() + "左辺が定数で代入できません");
 			}
 		}
 	}

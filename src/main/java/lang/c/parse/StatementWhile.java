@@ -32,10 +32,10 @@ public class StatementWhile extends CParseRule {
 				statement = new Statement(pcx);
 				statement.parse(pcx);
 			} else {
-				pcx.fatalError(tk.toExplainString() + "while(条件式)の後にはstatementが必要です");
+				pcx.recoverableError(tk.toExplainString() + "while(条件式)の後にはstatementが必要です");
 			}
 		} else {
-			pcx.fatalError(tk.toExplainString() + "whileの後には(条件式)が必要です");
+			pcx.recoverableError(tk.toExplainString() + "whileの後には(条件式)が必要です");
 		}
 	}
 

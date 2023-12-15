@@ -19,19 +19,23 @@ public class Program extends CParseRule {
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
-		// ここにやってくるときは、必ずisFirst()が満たされている
 		CParseRule statement = null;
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
-		while (Statement.isFirst(tk)) {
-			statement = new Statement(pcx);
-			statement.parse(pcx);
-			statementList.add(statement);
-			tk = ct.getCurrentToken(pcx);
-		}
+		try {
+			while (Statement.isFirst(tk)) {
+				statement = new Statement(pcx);
+				statement.parse(pcx);
+				statementList.add(statement);
+				tk = ct.getCurrentToken(pcx);
+			}
 
-		if (tk.getType() != CToken.TK_EOF) {
-			pcx.fatalError(tk.toExplainString() + "プログラムの最後にゴミがあります");
+			if (tk.getType() != CToken.TK_EOF) {
+				pcx.recoverableError(tk.toExplainString() + "プログラムの最後にゴミがありましたが無視します");
+			}
+		} catch (RecoverableErrorException e){
+			ct.skipTo(pcx, CToken.TK_SEMI, CToken.TK_RCUR);
+			tk = ct.getNextToken(pcx);
 		}
 	}
 

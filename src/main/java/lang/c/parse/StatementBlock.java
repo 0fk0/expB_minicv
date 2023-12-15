@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 
 import lang.FatalErrorException;
+import lang.RecoverableErrorException;
 import lang.c.CParseContext;
 import lang.c.CParseRule;
 import lang.c.CToken;
@@ -30,18 +31,22 @@ public class StatementBlock extends CParseRule {
 		tk = ct.getNextToken(pcx);
 		CParseRule statement = null;
 		while (Statement.isFirst(tk)) {
-			statement = new Statement(pcx);
-			statement.parse(pcx);
-			statementList.add(statement);
+			try {
+				statement = new Statement(pcx);
+				statement.parse(pcx);
+				statementList.add(statement);
+			} catch (RecoverableErrorException e){
+				ct.skipTo(pcx, CToken.TK_SEMI, CToken.TK_RCUR);
+				tk = ct.getNextToken(pcx);
+			}
 			tk = ct.getCurrentToken(pcx);
 		}
 
-		tk = ct.getCurrentToken(pcx);
 		if (tk.getType() == CToken.TK_RCUR){
 			rcur = tk;
 			tk = ct.getNextToken(pcx);
 		} else {
-			pcx.fatalError(tk.toExplainString() + "文の後には}が必要です");
+			pcx.warning(tk.toExplainString() + "{文}の最後の}を補完しました");
 		}
 	}
 

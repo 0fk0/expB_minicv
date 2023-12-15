@@ -18,26 +18,29 @@ public class StatementOutput extends CParseRule {
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
-		CTokenizer ct = pcx.getTokenizer();
-		CToken tk = ct.getCurrentToken(pcx);
-		output = tk;
+		try {
+			CTokenizer ct = pcx.getTokenizer();
+			CToken tk = ct.getCurrentToken(pcx);
+			output = tk;
 
-		tk = ct.getNextToken(pcx);
-		if (Expression.isFirst(tk)) {
-			expression = new Expression(pcx);
-			expression.parse(pcx);
-		} else {
-			pcx.fatalError(tk.toExplainString() + "OUTPUTの後ろにはexpressionが必要です");
+			tk = ct.getNextToken(pcx);
+			if (Expression.isFirst(tk)) {
+				expression = new Expression(pcx);
+				expression.parse(pcx);
+			} else {
+				pcx.recoverableError(tk.toExplainString() + "OUTPUTの後ろにはexpressionが必要です");
+			}
+
+			tk = ct.getCurrentToken(pcx);
+			if (tk.getType() == CToken.TK_SEMI) {
+				semi = tk;
+			} else {
+				pcx.warning(tk.toExplainString()+  "出力文で最後の;を補完しました");
+			}
+
+			tk = ct.getNextToken(pcx);
+		} catch (RecoverableErrorException e){
 		}
-
-		tk = ct.getCurrentToken(pcx);
-		if (tk.getType() == CToken.TK_SEMI) {
-			semi = tk;
-		} else {
-			pcx.fatalError(tk.toExplainString() + "出力文の最後には;が必要です");
-		}
-
-		tk = ct.getNextToken(pcx);
 	}
 
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {

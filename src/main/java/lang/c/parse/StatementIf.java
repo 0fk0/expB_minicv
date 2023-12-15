@@ -18,37 +18,40 @@ public class StatementIf extends CParseRule {
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
-		CTokenizer ct = pcx.getTokenizer();
-		CToken tk = ct.getCurrentToken(pcx);
-		IF = tk;
-
-		tk = ct.getNextToken(pcx);
-		if (ConditionBlock.isFirst(tk)){
-			conditionBlock = new ConditionBlock(pcx);
-			conditionBlock.parse(pcx);
-		} else {
-			pcx.fatalError(tk.toExplainString() + "ifの後には(条件式)が必要です");
-		}
-
-		tk = ct.getCurrentToken(pcx);
-		if (Statement.isFirst(tk)){
-			statement1 = new Statement(pcx);
-			statement1.parse(pcx);
-		} else {
-			pcx.fatalError(tk.toExplainString() + "if(条件式)の後にはstatementが必要です");
-		}
-
-		tk = ct.getCurrentToken(pcx);
-		if (tk.getType() == CToken.TK_ELSE){
-			ELSE = tk;
+		try {
+			CTokenizer ct = pcx.getTokenizer();
+			CToken tk = ct.getCurrentToken(pcx);
+			IF = tk;
 
 			tk = ct.getNextToken(pcx);
-			if (Statement.isFirst(tk)){
-				statement2 = new Statement(pcx);
-				statement2.parse(pcx);
+			if (ConditionBlock.isFirst(tk)){
+				conditionBlock = new ConditionBlock(pcx);
+				conditionBlock.parse(pcx);
 			} else {
-				pcx.fatalError(tk.toExplainString() + "elseの後にはstatementが必要です");
+				pcx.recoverableError(tk.toExplainString() + "ifの後には(条件式)が必要です");
 			}
+
+			tk = ct.getCurrentToken(pcx);
+			if (Statement.isFirst(tk)){
+				statement1 = new Statement(pcx);
+				statement1.parse(pcx);
+			} else {
+				pcx.recoverableError(tk.toExplainString() + "if(条件式)の後にはstatementが必要です");
+			}
+
+			tk = ct.getCurrentToken(pcx);
+			if (tk.getType() == CToken.TK_ELSE){
+				ELSE = tk;
+
+				tk = ct.getNextToken(pcx);
+				if (Statement.isFirst(tk)){
+					statement2 = new Statement(pcx);
+					statement2.parse(pcx);
+				} else {
+					pcx.recoverableError(tk.toExplainString() + "elseの後にはstatementが必要です");
+				}
+			}
+		} catch (RecoverableErrorException e){
 		}
 	}
 
