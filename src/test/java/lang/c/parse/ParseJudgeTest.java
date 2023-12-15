@@ -69,8 +69,8 @@ public class ParseJudgeTest {
     }
     
     @Test
-    public void parseJudgeLogicalOpTest()  {
-        String[] testDataArr = {"i_a == 1 &&", "i_a == 1 ||"};
+    public void parseJudgeAndTest()  {
+        String[] testDataArr = {"i_a == 1 &&"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -82,7 +82,26 @@ public class ParseJudgeTest {
                 cp.parse(cpContext);
                 fail("Failed with " + testData + ". FatalErrorException should be invoked");
             } catch ( FatalErrorException e ) {
-                assertThat(e.getMessage(), containsString("論理演算子の後ろはconditionAllです"));
+                assertThat(e.getMessage(), containsString("論理演算子&&の後ろはconditionAllです"));
+            }
+        }
+    }
+
+    @Test
+    public void parseJudgeOrTest()  {
+        String[] testDataArr = {"i_a == 1 ||"};
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat("Failed with " + testData, Judge.isFirst(firstToken), is(true));
+            Judge cp = new Judge(cpContext);
+
+            try {
+                cp.parse(cpContext);
+                fail("Failed with " + testData + ". FatalErrorException should be invoked");
+            } catch ( FatalErrorException e ) {
+                assertThat(e.getMessage(), containsString("論理演算子||の後ろはconditionAllPriorityです"));
             }
         }
     }

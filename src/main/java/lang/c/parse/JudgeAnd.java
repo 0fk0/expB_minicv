@@ -10,7 +10,7 @@ import lang.c.CTokenizer;
 import lang.c.CType;
 
 public class JudgeAnd extends CParseRule {
-    // JudgeAnd ::= AND conditionAll
+    // judgeAnd	::=	AND conditionAll
 	CParseRule conditionL, conditionR;
 	CToken op;
 
@@ -31,7 +31,7 @@ public class JudgeAnd extends CParseRule {
             conditionR = new ConditionAll(pcx);
             conditionR.parse(pcx);
         } else {
-			pcx.fatalError(tk.toExplainString() + "論理演算子の後ろはconditionAllです");
+			pcx.fatalError(tk.toExplainString() + "論理演算子&&の後ろはconditionAllです");
 		}
 	}
 

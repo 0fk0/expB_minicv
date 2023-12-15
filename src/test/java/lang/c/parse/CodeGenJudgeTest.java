@@ -155,4 +155,28 @@ public class CodeGenJudgeTest {
         CParseRule rule = new Judge(cpContext);
         helper.checkCodeGen(expected, rule, cpContext);
     }
+
+    @Test
+    public void JudgeAndOrTest() throws FatalErrorException {
+        inputStream.setInputString("""
+                true || true && true
+        """);
+        String expected = """
+                MOV     #0x0001, (R6)+  ; Condition: true
+                MOV     #0x0001, (R6)+  ; Condition: true
+                MOV     #0x0001, (R6)+  ; Condition: true
+                MOV     -(R6), R0       ; JudgeAnd: 二つの真理値を取り出し て論理積を取る
+                MOV     -(R6), R1       ; JudgeAnd:
+                AND     R0, R1  ; JudgeAnd:
+                MOV     R1, (R6)+       ; JudgeAnd:
+                MOV     -(R6), R0       ; JudgeOr: 二つの真理値を取り出して論理和を取る
+                MOV     -(R6), R1       ; JudgeOr:
+                OR      R0, R1  ; JudgeOr:
+                MOV     R1, (R6)+       ; JudgeOr:
+        """;
+
+        // Check only code portion, not validate comments
+        CParseRule rule = new Judge(cpContext);
+        helper.checkCodeGen(expected, rule, cpContext);
+    }
 }
