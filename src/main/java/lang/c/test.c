@@ -1,1 +1,1 @@
-if (true || true && true){}
+||&&!|   // 最後の | は TK_ILL になるはず
