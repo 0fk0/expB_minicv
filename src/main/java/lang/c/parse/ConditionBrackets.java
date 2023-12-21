@@ -42,6 +42,8 @@ public class ConditionBrackets extends CParseRule {
 	public void semanticCheck(CParseContext pcx) throws FatalErrorException {
 		if (condition != null) {
 			condition.semanticCheck(pcx);
+			this.setCType(condition.getCType());
+			this.setConstant(condition.isConstant());
 		}
 	}
 
