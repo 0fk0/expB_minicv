@@ -9,14 +9,14 @@ import lang.c.CToken;
 import lang.c.CTokenizer;
 
 public class ConditionAll extends CParseRule {
-    // ConditionAll ::= condition | conditionNT
+    // ConditionAll ::= condition | conditionNT | conditionBrackets
 	CParseRule condition;
 
 	public ConditionAll(CParseContext pcx) {
 	}
 
 	public static boolean isFirst(CToken tk) {
-		return (Condition.isFirst(tk) || ConditionNT.isFirst(tk));
+		return (Condition.isFirst(tk) || ConditionNT.isFirst(tk) || ConditionBrackets.isFirst(tk));
 	}
 
 	public void parse(CParseContext pcx) throws FatalErrorException {
@@ -27,6 +27,9 @@ public class ConditionAll extends CParseRule {
 			condition.parse(pcx);
 		} else if (ConditionNT.isFirst(tk)) {
             condition = new ConditionNT(pcx);
+			condition.parse(pcx);
+		} else if (ConditionBrackets.isFirst(tk)){
+			condition = new ConditionBrackets(pcx);
 			condition.parse(pcx);
 		}
 	}

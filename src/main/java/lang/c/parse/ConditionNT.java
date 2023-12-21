@@ -9,9 +9,9 @@ import lang.c.CToken;
 import lang.c.CTokenizer;
 
 public class ConditionNT extends CParseRule {
-    // ConditionNT ::= NT conditionAll
+    // ConditionNT ::= NT ( conditionAll | LPAR judge RPAR (優先) )
 	CParseRule condition;
-	CToken op;
+	CToken op, lpar, rpar;
 
 	public ConditionNT(CParseContext pcx) {
 	}
@@ -23,17 +23,32 @@ public class ConditionNT extends CParseRule {
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
-		if (tk.getType() == CToken.TK_NT) {
-            op = tk;
-		}
+		op = tk;
 
 		tk = ct.getNextToken(pcx);
+		if (tk.getType() == CToken.TK_LPAR) {
+			lpar = tk;
+			tk = ct.getNextToken(pcx);
 
-		if (ConditionAll.isFirst(tk)) {
-            condition = new ConditionAll(pcx);
-            condition.parse(pcx);
+			if (Judge.isFirst(tk)) {
+				condition = new Judge(pcx);
+				condition.parse(pcx);
+			} else {
+				pcx.fatalError(tk.toExplainString() + "NT(の後ろはjudgeです");
+			}
+
+			tk = ct.getCurrentToken(pcx);
+			if (tk.getType() == CToken.TK_RPAR) {
+				rpar = tk;
+				tk = ct.getNextToken(pcx);
+			} else {
+				pcx.fatalError(tk.toExplainString() + "NT(judgeの後ろは ) です");
+			}
+		} else if (ConditionAll.isFirst(tk)) {
+			condition = new ConditionAll(pcx);
+			condition.parse(pcx);
         } else {
-			pcx.fatalError(tk.toExplainString() + "NTの後ろはconditionAllです");
+			pcx.fatalError(tk.toExplainString() + "NTの後ろはconditionAll又は[judge]です");
 		}
 	}
 
