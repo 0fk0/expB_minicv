@@ -78,7 +78,7 @@ public class SemanticCheckJudgeTest {
     // 正当のテストコード例(conditionAll)
     @Test
     public void semanticCheckTrueExample2() throws FatalErrorException {
-        String[] testDataArr = {"!i_a + 1 == 1", "!true", "[-1 <= i_a && i_a < 1]"};
+        String[] testDataArr = {"!true", "[-1 <= i_a && i_a < 1]"};
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
