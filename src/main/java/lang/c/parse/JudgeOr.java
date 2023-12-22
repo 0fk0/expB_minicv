@@ -10,12 +10,12 @@ import lang.c.CTokenizer;
 import lang.c.CType;
 
 public class JudgeOr extends CParseRule {
-    // JudgeOr ::= OR conditionAll
+    // JudgeOr ::= OR conditionAllPriority
 	CParseRule conditionL, conditionR;
 	CToken op;
 
-	public JudgeOr(CParseContext pcx, CParseRule conditionAll) {
-		this.conditionL = conditionAll;
+	public JudgeOr(CParseContext pcx, CParseRule conditionAllPriority) {
+		this.conditionL = conditionAllPriority;
 	}
 
 	public static boolean isFirst(CToken tk) {
@@ -31,11 +31,11 @@ public class JudgeOr extends CParseRule {
 
 		tk = ct.getNextToken(pcx);
 
-		if (ConditionAll.isFirst(tk)) {
-            conditionR = new ConditionAll(pcx);
+		if (ConditionAllPriority.isFirst(tk)) {
+            conditionR = new ConditionAllPriority(pcx);
             conditionR.parse(pcx);
         } else {
-			pcx.fatalError(tk.toExplainString() + "論理演算子の後ろはconditionAllです");
+			pcx.fatalError(tk.toExplainString() + "論理演算子||の後ろはconditionAllPriorityです");
 		}
 	}
 

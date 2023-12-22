@@ -11,7 +11,7 @@ import lang.c.CTokenizer;
 public class ConditionNT extends CParseRule {
     // ConditionNT ::= NT conditionAll
 	CParseRule condition;
-	CToken op;
+	CToken op, lpar, rpar;
 
 	public ConditionNT(CParseContext pcx) {
 	}
@@ -23,15 +23,12 @@ public class ConditionNT extends CParseRule {
 	public void parse(CParseContext pcx) throws FatalErrorException {
 		CTokenizer ct = pcx.getTokenizer();
 		CToken tk = ct.getCurrentToken(pcx);
-		if (tk.getType() == CToken.TK_NT) {
-            op = tk;
-		}
+		op = tk;
 
 		tk = ct.getNextToken(pcx);
-
 		if (ConditionAll.isFirst(tk)) {
-            condition = new ConditionAll(pcx);
-            condition.parse(pcx);
+			condition = new ConditionAll(pcx);
+			condition.parse(pcx);
         } else {
 			pcx.fatalError(tk.toExplainString() + "NTの後ろはconditionAllです");
 		}

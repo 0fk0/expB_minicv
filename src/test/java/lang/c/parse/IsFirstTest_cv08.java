@@ -53,7 +53,7 @@ public class IsFirstTest_cv08 {
 
     @Test
     public void testConditionAll() {
-        String[] testDataArr = { "!true", "false" };
+        String[] testDataArr = { "!true", "false", "[-1 <= i_a && i_a < 1]" };
         for ( String testData: testDataArr ) {
             resetEnvironment();
             inputStream.setInputString(testData);
@@ -85,6 +85,17 @@ public class IsFirstTest_cv08 {
     }
 
     @Test
+    public void testConditionAllPriority() {
+        String[] testDataArr = { "1 <= i_a || i_a < -1", "!1 <= i_a && i_a < -1" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, ConditionAllPriority.isFirst(firstToken), is(true));    
+        }
+    }
+
+    @Test
     public void testJudgeAnd() {
         String[] testDataArr = { "&& i_a < -1" };
         for ( String testData: testDataArr ) {
@@ -103,6 +114,17 @@ public class IsFirstTest_cv08 {
             inputStream.setInputString(testData);
             CToken firstToken = tokenizer.getNextToken(cpContext);
             assertThat(testData, JudgeOr.isFirst(firstToken), is(true));    
+        }
+    }
+
+    @Test
+    public void testConditionBrackets() {
+        String[] testDataArr = { "[true && true]" };
+        for ( String testData: testDataArr ) {
+            resetEnvironment();
+            inputStream.setInputString(testData);
+            CToken firstToken = tokenizer.getNextToken(cpContext);
+            assertThat(testData, ConditionBrackets.isFirst(firstToken), is(true));    
         }
     }
 }
