@@ -64,13 +64,13 @@ public class ParseJudgeTest {
         try {
             rule.parse(cpContext);
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("NTの後ろはconditionAll又は[judge]です"));
+            assertThat(e.getMessage(), containsString("NTの後ろはconditionAllです"));
         }
     }
 
     @Test
     public void parseConditionNTTest2() throws FatalErrorException {
-        inputStream.setInputString("!(");
+        inputStream.setInputString("![");
         CToken firstToken = tokenizer.getNextToken(cpContext);
         assertThat(ConditionNT.isFirst(firstToken), is(true));
         ConditionNT ruleNumber = new ConditionNT(cpContext);
@@ -78,13 +78,13 @@ public class ParseJudgeTest {
         try {
             rule.parse(cpContext);
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("NT(の後ろはjudgeです"));
+            assertThat(e.getMessage(), containsString("[ の後ろはconditioinAllです"));
         }
     }
 
     @Test
     public void parseConditionNTTest3() throws FatalErrorException {
-        inputStream.setInputString("!(true");
+        inputStream.setInputString("![true");
         CToken firstToken = tokenizer.getNextToken(cpContext);
         assertThat(ConditionNT.isFirst(firstToken), is(true));
         ConditionNT ruleNumber = new ConditionNT(cpContext);
@@ -92,7 +92,7 @@ public class ParseJudgeTest {
         try {
             rule.parse(cpContext);
         } catch ( FatalErrorException e ) {
-            assertThat(e.getMessage(), containsString("NT(judgeの後ろは ) です"));
+            assertThat(e.getMessage(), containsString("[conditionAll の後ろは ] です"));
         }
     }
     

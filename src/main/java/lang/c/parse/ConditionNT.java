@@ -9,7 +9,7 @@ import lang.c.CToken;
 import lang.c.CTokenizer;
 
 public class ConditionNT extends CParseRule {
-    // ConditionNT ::= NT ( conditionAll | LPAR judge RPAR (優先) )
+    // ConditionNT ::= NT conditionAll
 	CParseRule condition;
 	CToken op, lpar, rpar;
 
@@ -26,29 +26,11 @@ public class ConditionNT extends CParseRule {
 		op = tk;
 
 		tk = ct.getNextToken(pcx);
-		if (tk.getType() == CToken.TK_LPAR) {
-			lpar = tk;
-			tk = ct.getNextToken(pcx);
-
-			if (Judge.isFirst(tk)) {
-				condition = new Judge(pcx);
-				condition.parse(pcx);
-			} else {
-				pcx.fatalError(tk.toExplainString() + "NT(の後ろはjudgeです");
-			}
-
-			tk = ct.getCurrentToken(pcx);
-			if (tk.getType() == CToken.TK_RPAR) {
-				rpar = tk;
-				tk = ct.getNextToken(pcx);
-			} else {
-				pcx.fatalError(tk.toExplainString() + "NT(judgeの後ろは ) です");
-			}
-		} else if (ConditionAll.isFirst(tk)) {
+		if (ConditionAll.isFirst(tk)) {
 			condition = new ConditionAll(pcx);
 			condition.parse(pcx);
         } else {
-			pcx.fatalError(tk.toExplainString() + "NTの後ろはconditionAll又は[judge]です");
+			pcx.fatalError(tk.toExplainString() + "NTの後ろはconditionAllです");
 		}
 	}
 
